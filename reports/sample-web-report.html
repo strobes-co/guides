@@ -1,523 +1,2720 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Strobes Security Report</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');   
     
-    /* Core styles */
+    .table-of-contents a {
+    color: inherit;
+    text-decoration: none;
+    }
+    
+    
+    .scanning-poc-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    height: auto;
+    border: 2px solid black; /* Adjust the border thickness as needed */
+    }
+    
+    
+    
+    .bug_description > ul li {
+        margin-left: 25px;
+           margin-top: 6px;
+        margin-bottom: 6px;
+    }
+    
+    .bug_description > pre {
+    margin: 3px 0; /* 3px top and bottom margin, 0 left and right margin */
+    background-color: #F2F2F2;
+    font-weight: 100;
+    padding: 3px; /* Set padding to 3px on all sides */
+    font-size: 14px;
+    white-space: pre-wrap; /* Preserve whitespace but handle line breaks */
+    }
+    
+    .bug_description > p {
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+    
+       .bug_description > table {
+    margin-top: 10px;
+    border-collapse: collapse;
+    width: 80%;
+    border: 1px solid #ddd; /* Very thin border with light gray color */
+    max-width: 600px;
+    }
+    
+    .bug_description th {
+    border: 0px !important; /* Remove border from headers and use !important to override other styles */
+    padding: 3px; /* Adjusted padding for headers */
+    background-color: #333; /* Black background for headers */
+    color: white; /* White text for headers */
+    }
+    
+    .bug_description td {
+    border: 0px !important; /* Remove border from table cells and use !important to override other styles */
+    padding: 0 3px; /* Zero padding top and bottom, 3px left and right */
+    text-align: left;
+    line-height: 1.5; /* Adjust row height if needed */
+    }
+    
+    .bug_description tr {
+    line-height: 1.5; /* Ensure minimum row height */
+    }
+    
+    .bug_description tr:nth-child(even) td {
+    background-color: #F2F2F2; /* Color for even rows */
+    }
+    
+    .bug_description tr:nth-child(odd) td {
+    background-color: #ffffff; /* Color for odd rows */
+    }
+    
+    .bug_description td:nth-child(2),
+    .bug_description td:nth-child(3) {
+    text-align: center; /* Center-align text for 2nd and 3rd columns */
+    }
+    
+    .info-activity > table {
+    margin-top: 30px;
+    border-collapse: collapse;
+    width: 80%;
+    border: 0px solid #ddd !important; /* Very thin border with light gray color */
+    max-width: 600px;
+    }
+    
+    .info-activity th {
+    border:  1px solid #F2F2F2 !important; /* Remove border from headers and use !important to override other styles */
+    padding: 3px !important; /* Adjusted padding for headers */
+    background-color: #333 !important; /* Black background for headers */
+    color: white !important; /* White text for headers */
+    }
+    
+    .info-activity td {
+    border: 1px solid #F2F2F2 !important; /* Remove border from table cells and use !important to override other styles */
+    padding: 0 3px !important; /* Zero padding top and bottom, 3px left and right */
+    text-align: left !important;
+    line-height: 1.5 !important; /* Adjust row height if needed */
+    }
+    
+    .info-activity tr {
+    line-height: 1.5 !important; /* Ensure minimum row height */
+    }
+    
+    .info-activity tr:nth-child(even) td {
+    background-color: #F2F2F2 !important; /* Color for even rows */
+    }
+    
+    .info-activity tr:nth-child(odd) td {
+    background-color: #ffffff !important; /* Color for odd rows */
+    }
+    
+    .info-activity td:nth-child(2),
+    .info-activity td:nth-child(3) {
+    text-align: center !important; /* Center-align text for 2nd and 3rd columns */
+    }
+    
+    
+    .info-table-user-input > table {
+    margin-top: 30px;
+    border-collapse: collapse;
+    width: 80%;
+    border: 1px solid #ddd; /* Very thin border with light gray color */
+    max-width: 600px;
+    }
+    
+    .info-table-user-input th {
+    border: 1px solid #F2F2F2 !important; /* Remove border from headers and use !important to override other styles */
+    padding: 3px; /* Adjusted padding for headers */
+    background-color: #333; /* Black background for headers */
+    color: white; /* White text for headers */
+    }
+    
+    .info-table-user-input td {
+    border: 1px solid #F2F2F2 !important; /* Remove border from table cells and use !important to override other styles */
+    padding: 0 3px; /* Zero padding top and bottom, 3px left and right */
+    text-align: left;
+    line-height: 1.5; /* Adjust row height if needed */
+    }
+    
+    .info-table-user-input tr {
+    line-height: 1.5; /* Ensure minimum row height */
+    }
+    
+    .info-table-user-input tr:nth-child(even) td {
+    background-color: #F2F2F2; /* Color for even rows */
+    }
+    
+    .info-table-user-input tr:nth-child(odd) td {
+    background-color: #ffffff; /* Color for odd rows */
+    }
+    
+    .info-table-user-input td:nth-child(2),
+    .info-table-user-input td:nth-child(3), 
+     .info-table-user-input td:nth-child(4) {
+    text-align: center; /* Center-align text for 2nd and 3rd columns */
+    }
+    
+    
+    
     body {
-      font-family: 'IBM Plex Sans', sans-serif;
-      margin: 0;
-      padding: 1cm 1cm 2cm;
-      background: white;
-      font-size: 12pt;
+    	font-family: 'IBM Plex Sans', sans-serif;
+    	margin: 0;
+    	padding: 0;
+    	display: flex;
+    	flex-direction: column;
+    	align-items: center;
+    	justify-content: center;
+    	height: 100vh;
+    	background-color: #f4f4f4;
     }
     
-    /* Page handling */
-    @page {
-      size: A4;
-      margin: 1cm 0.2cm;
-    }
-    
-    .new-page {
-      page-break-before: always;
-    }
-    
-    /* Typography */
-    .title {
-      font-size: 28px;
-      font-weight: 200;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-    
-    .title-2 {
-      font-size: 22px;
-      font-weight: 200;
-      margin-top: 20px;
-    }
-    
-    .title-3 {
-      font-size: 26px;
-      font-weight: 100;
-      color: #0F62FE;
-      margin-top: 20px;
-    }
-    
-    .cover-page-title {
-      font-size: 40px;
-      font-weight: 100;
-      text-align: center;
-      margin-top: 20px;
-    }
-    
-    /* Table styles */
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 30px;
-    }
-    
-    .info-table th, .info-table td {
-      padding: 8px;
-      text-align: left;
-    }
-    
-    .info-table th {
-      background-color: #f7f7f7;
-      font-weight: 600;
-    }
-    
-    .info-table tr:nth-child(odd) {
-      background-color: #fafafa;
-    }
-    
-    .info-table tr:nth-child(even) {
-      background-color: #f3f3f3;
-    }
-    
-    /* TOC styles */
-    .toc-item {
-      margin-left: 20px;
-      font-size: 16px;
-      font-weight: 700;
-    }
-    
-    .toc-subitem {
-      margin-left: 40px;
-      font-weight: 300;
-    }
-    
-    .toc-subsubitem {
-      margin-left: 60px;
-      font-weight: 100;
-    }
-    
-    /* Content sections */
-    .content {
-      text-align: justify;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-    
-    /* Test case tables */
-    .test-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    
-    .test-table th, .test-table td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    
-    .test-table th {
-      background-color: #f2f2f2;
-      text-align: center;
-    }
-    
-    .category-header {
-      font-size: 18px;
-      background-color: #333;
-      padding: 12px 6px;
-      color: white;
-      text-align: left;
-    }
-    
-    /* Security posture */
-    .security-posture {
-      font-size: 28px;
-      font-weight: 100;
-      text-transform: uppercase;
-      margin: 20px 0;
-    }
-    
-    /* Severity colors */
-    .severity-critical td:first-child {
-      background-color: #EE7077;
-    }
-    
-    .severity-high td:first-child {
-      background-color: #FEB297;
-    }
-    
-    .severity-medium td:first-child {
-      background-color: #FCDBA6;
-    }
-    
-    .severity-low td:first-child {
-      background-color: #FFF1C0;
-    }
-    
-    .severity-info td:first-child {
-      background-color: #BAE6AA;
-    }
-    
-    /* Print styles */
-    @media print {
-      body {
-        -webkit-print-color-adjust: exact;
-      }
-      
-      img {
-        max-width: 100% !important;
-        object-fit: contain;
-      }
-    }
-    
-    /* Vulnerability section */
-    .bug_description ul li {
-      margin-left: 25px;
-      margin-top: 6px;
-    }
-    
-    .bug_description pre {
-      margin: 3px 0;
-      background-color: #F2F2F2;
-      padding: 3px;
-      font-size: 14px;
-      white-space: pre-wrap;
-    }
-    
-    /* Logo */
     .logo {
-      text-align: center;
-      margin-top: 50px;
+    	margin-top: 50px;
+    }
+    
+    .logo {
+      text-align: center; /* Center-aligns the content inside the div */
     }
     
     .logo img {
+      display: inline-block; /* Ensures the image is treated as an inline element */
       width: 60%;
       height: auto;
     }
-  </style>
-</head>
+    
+    
+    .title {
+    	margin-top: 20px;
+    	margin-bottom: 10px;
+    	font-size: 28px;
+    	font-weight: 200;
+    	text-align: left;
+    }
+    
+    .cover-page-title {
+    	margin-top: 20px;
+    	font-size: 40px;
+    	font-weight: 100;
+    	text-align: center;
+    }
+    
+    .title-2 {
+    	margin-top: 20px;
+    	font-size: 22px;
+    	font-weight: 200;
+    	text-align: left;
+    }
+    
+    .title-3 {
+    	margin-top: 20px;
+    	font-size: 26px;
+    	font-weight: bold;
+    	font-weight: 100;
+    	text-align: left;
+    	color: #0F62FE;
+    }
+    
+    .info-table {
+    margin-top: 30px;
+    border-collapse: collapse; /* Collapse borders into a single line */
+    width: 80%;
+    max-width: 600px;
+    border-radius: 12px; /* Rounded corners for the entire table */
+    background: #ffffff; /* Clean white background */
+    border: none; /* Remove borders for the table itself */
+    }
+    
+    .info-table th,
+    .info-table td {
+    padding: 12px 15px; /* Increased padding for better spacing */
+    text-align: left;
+    border: none; /* Remove borders between cells */
+    font-family: 'Arial', sans-serif; /* Clean and modern font */
+    font-size: 14px; /* Uniform font size for better readability */
+    }
+    
+    .info-table th {
+    font-weight: 600; /* Slightly heavier weight for headers */
+    color: black; /* Darker text for headers */
+    background-color: #f7f7f7; /* Subtle background color for headers */
+    text-transform: uppercase; /* Uppercase for headers */
+    letter-spacing: 1px; /* Slightly increased letter spacing */
+    }
+    
+    
+    
+    .info-table tr:nth-child(odd) {
+    background-color: #fafafa; /* Very light gray for odd rows */
+    }
+    
+    .info-table tr:nth-child(even) {
+    background-color: #f3f3f3; /* Slightly darker light gray for even rows */
+    }
+    
+    .info-table td {
+    color: #555; /* Muted text color for data cells */
+    vertical-align: middle; /* Vertically center the content */
+    }
+    
+    .info-table td:first-child {
+    font-weight: bold; /* Emphasize the first column */
+    color: #00796b; /* Teal color for the first column */
+    }
+    
+    .info-table th:first-child {
+    border-top-left-radius: 12px; /* Rounded corner for top-left header */
+    }
+    
+    .info-table th:last-child {
+    border-top-right-radius: 12px; /* Rounded corner for top-right header */
+    }
+    
+    .info-table tr:last-child td:first-child {
+    border-bottom-left-radius: 12px; /* Rounded corner for bottom-left cell */
+    }
+    
+    .info-table tr:last-child td:last-child {
+    border-bottom-right-radius: 12px; /* Rounded corner for bottom-right cell */
+    }
+    
+    
+    
+    @media print {
+    	.new-page {
+    		page-break-before: always;
+    	}
+    }
+    
+    
+    
+       .toc-item {
+    margin-left: 20px;
+    font-size: 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 700; /* Bold for main items */
+    }
+    
+    .toc-subitem {
+    margin-left: 40px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300; /* Semi-bold for sub-items */
+    }
+    
+    .toc-subsubitem {
+    margin-left: 60px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 100; /* Light for sub-sub-items */
+    }
+    
+    
+    
+    .page-number {
+    	float: right;
+    }
+    
+    .section-title {
+    	font-size: 20px;
+    	font-weight: bold;
+    	margin-top: 20px;
+    	margin-bottom: 10px;
+    }
+    
+    .content {
+    	text-align: justify;
+    	margin-bottom: 20px;
+    	line-height: 1.5;
+    }
+    
+    .intro-text {
+    	margin-bottom: 20px;
+    }
+    
+    .content ol {
+    	margin-left: 40px;
+    	line-height: 1.5;
+    }
+    
+    .engagement-contents ol {
+    	margin-left: 40px;
+    	line-height: 1.5;
+    }
+    
+    .steps-to-reproduce ol {
+    	margin-left: 30px;
+    	line-height: 1.5;
+    }
+    
+    .mitigation ol {
+    	margin-left: 40px;
+    	line-height: 1.5;
+    }
+    
+    .references ol {
+    	margin-left: 40px;
+    	line-height: 1.5;
+    }
+    
+    .new-page {
+    	page-break-before: always;
+    }
+    
+    /* CSS for table class */
+    .table-container {
+    	width: 100%;
+    	border-collapse: collapse;
+    	margin-bottom: 20px;
+    }
+    
+    .table-container th,
+    .table-container td {
+    	border: 1px solid black;
+    	padding: 8px;
+    	text-align: left;
+    }
+    
+    .table-container th {
+    	background-color: #333;
+    }
+    
+    .info-table,
+    .pentesters-table {
+    	width: 100%;
+    	border-collapse: collapse;
+    }
+    
+    .info-table th,
+    .info-table td {
+    	padding: 6px;
+    	text-align: left;
+    }
+    
+    .pentesters-table td {
+    	padding: 4px;
+    	text-align: center;
+    }
+    
+    .test-table {
+    	width: 100%;
+    	border-collapse: collapse;
+    	margin-bottom: 20px;
+    }
+    
+    .test-table th,
+    .test-table td {
+    	border: 1px solid #ddd;
+    	padding: 8px;
+    	text-align: left;
+    }
+    
+    .test-table th {
+    	background-color: #f2f2f2;
+    	text-align: center;
+    }
+    
+    .category-header {
+    	font-size: 18px;
+    	background-color: #333;
+    	border: 1px solid #ddd;
+    	font-weight: 100;
+    	padding: 12px 6px;
+    	color: white;
+    	text-align: left;
+    }
+    
+        .information-gathering-table tr:nth-child(even) td {
+    background-color: #F2F2F2; /* Color for even rows */
+    }
+    
+    .information-gathering-table tr:nth-child(odd) td {
+    background-color: #ffffff; /* Color for odd rows */
+    }
+    
+    
+    .small-col {
+    	width: 8%;
+    	/* Adjust the width as needed */
+    }
+    
+    .large-col {
+    	width: 92%;
+    	/* Adjust the width as needed */
+    }
+    
+    /* CSS for posture-table class */
+    .posture-table {
+    	width: 100%;
+    	border-collapse: collapse;
+    	border: 0px!important;
+    	margin-bottom: 20px;
+    }
+    
+    .posture-table tr:nth-child(even) td:nth-child(2) {
+    background-color: #F2F2F2; /* Color for even rows in the second column */
+    }
+    
+    .posture-table tr:nth-child(odd) td:nth-child(2) {
+    background-color: #ffffff; /* Color for odd rows in the second column */
+    }
+    
+    
+    .posture-table th,
+    .posture-table td {
+        border: 0px!important;
+    	
+    	padding: 8px;
+    	text-align: left;
+    }
+    
+    .posture-table th {
+    	background-color: #333;
+    	color: white;
+    }
+    
+    /* CSS for posture levels */
+    .weakness-weak td:first-child {
+    	background-color: #EE7077;
+    	/* Light red */
+    }
+    
+    .weakness-moderate td:first-child {
+    	background-color: #F7CAAC;
+    	/* Light yellow */
+    }
+    
+    .weakness-good td:first-child {
+    	background-color: #C5E0B3;
+    	/* Light green */
+    }
+    
+    .weakness-excellent td:first-child {
+    	background-color: #A8D08D;
+    	/* Light blue */
+    }
+    
+    .security-posture {
+    	font-size: 28px;
+    	padding: 10px;
+    	text-transform: uppercase;
+    	font-weight: bold;
+    	margin-bottom: 20px;
+    }
+    
+    /* CSS for severity-table class */
+    .severity-table {
+    	width: 100%;
+    	
+    	border: 0px!important;
+    	border-collapse: collapse;
+    	margin-bottom: 20px;
+    }
+    
+    .severity-table th,
+    .severity-table td {
+    	border: 0px!important;
+    	padding: 8px;
+    	text-align: left;
+    }
+    
+    .severity-table tr:nth-child(even) td:nth-child(2),
+    .severity-table tr:nth-child(even) td:nth-child(3),
+    .severity-table tr:nth-child(even) td:nth-child(4) {
+    background-color: #F2F2F2; /* Color for even rows in the 2nd, 3rd, and 4th columns */
+    }
+    
+    .severity-table tr:nth-child(odd) td:nth-child(2),
+    .severity-table tr:nth-child(odd) td:nth-child(3),
+    .severity-table tr:nth-child(odd) td:nth-child(4) {
+    background-color: #ffffff; /* Color for odd rows in the 2nd, 3rd, and 4th columns */
+    }
+    
+    
+    
+    .severity-table th {
+    	background-color: #333;
+    	/* Darker grey for header */
+    	color: white;
+    }
+    
+    .severity-table td:first-child {
+    	background-color: #FFCC99;
+    	/* Light orange for severity column */
+    }
+    
+    /* CSS for severity levels */
+    .severity-critical td:first-child {
+    	background-color: #EE7077;
+    	/* Light orange-red */
+    }
+    
+    .severity-high td:first-child {
+    	background-color: #FEB297;
+    	/* Light orange */
+    }
+    
+    .severity-medium td:first-child {
+    	background-color: #FCDBA6;
+    	/* Light yellow */
+    }
+    
+    .severity-low td:first-child {
+    	background-color: #FFF1C0;
+    	/* Light green */
+    }
+    
+    .severity-info td:first-child {
+    	background-color: #BAE6AA;
+    	/* Light blue */
+    }
+    
+    .Page-eight-vulnerabilities-overview-heading {
+    	font-size: 25px;
+    }
+    
+    .Page-eight-vulnerabilities-display-flex {
+    	display: flex;
+    	align-items: flex-end;
+    	height: 300px;
+    	background-color: #f8f8f8;
+    	padding: 10px;
+    	box-sizing: border-box;
+    }
+    
+    .bar2 {
+    	width: 150px;
+    	position: relative;
+    	margin-right: 10px;
+    	background-color: #ddd;
+    	border-radius: 5px;
+    }
+    
+    .text-at-bottom {
+    	position: absolute;
+    	top: 50%;
+    	left: 50%;
+    	transform: translate(-50%, -50%);
+    	width: 100%;
+    	text-align: center;
+    }
+    
+    .critical-bar {
+    	background-color: #EE7077;
+    	min-height: 30px;
+    }
+    
+    .high-bar {
+    	background-color: #FEB297;
+    	min-height: 30px;
+    }
+    
+    .medium-bar {
+    	background-color: #FCDBA6;
+    	min-height: 30px;
+    }
+    
+    .low-bar {
+    	background-color: #FFF1C0;
+    	min-height: 30px;
+    }
+    
+    .info-bar {
+    	background-color: #BAE6AA;
+    	min-height: 30px;
+    }
+    
+    .Page-eight-vulnerabilities-severities {
+    	display: flex;
+    }
+    
+    .severity-bar-one {
+    	padding-left: 50px;
+    }
+    
+    .severity-bar-two {
+    	padding-left: 100px;
+    }
+    
+    .severity-bar-three {
+    	padding-left: 100px;
+    }
+    
+    .severity-bar-four {
+    	padding-left: 90px;
+    }
+    
+    .severity-bar-five {
+    	padding-left: 80px;
+    }
+    
+    .bar {
+    	height: 30px;
+    	margin: 5px 0;
+    	padding: 5px;
+    	color: #333;
+    	font-family: Arial, sans-serif;
+    	position: relative;
+    	overflow: hidden;
+    }
+    
+    .chart-box {
+    	border: 1px solid #ccc;
+    	width: 100%;
+    	max-width: 600px;
+    	/* Adjust max-width as needed */
+    	padding: 16px;
+    	box-sizing: border-box;
+    	/* Ensures padding is included in the width */
+    	margin: 20px auto;
+    	/* Centers the box horizontally */
+    	background-color: #fafafa;
+    }
+    
+    .bar-container {
+    	width: 100%;
+    	background-color: #f0f0f0;
+    	/* Light shaded background color */
+    	height: 50px;
+    	/* Adjust height as needed */
+    	position: relative;
+    	margin-bottom: 10px;
+    	overflow: hidden;
+    }
+    
+    .bar {
+    	height: 100%;
+    	position: absolute;
+    	display: flex;
+    	align-items: center;
+    	padding-left: 10px;
+    }
+    
+    .bar.critical {
+    	background-color: #EE7077;
+    }
+    
+    .bar.high {
+    	background-color: #FEB297;
+    }
+    
+    .bar.medium {
+    	background-color: #FCDBA6;
+    }
+    
+    .bar.low {
+    	background-color: #FFF1C0;
+    }
+    
+    .bar.informational {
+    	background-color: #BAE6AA;
+    }
+    
+    .label {
+    	color: black;
+    	font-weight: bold;
+    	z-index: 1;
+    	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    hr {
+    	border: 0;
+    	border-top: 1px solid #ddd;
+    	margin: 10px 0;
+    }
+        
+    .certin-table {
+      margin-bottom: 20px;
+      margin-right: 10px;
+    }
+    
+    .certin-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px; /* Set font size */
+      border: 1px solid #ddd !important; /* Thin grey border around the table */
+    }
+    
+    .certin-table th,
+    .certin-table td {
+      border: 1px solid #ddd !important; /* Override to ensure thin grey borders */
+      padding: 3px 8px; /* Adjusted padding for consistency */
+      text-align: left;
+      word-wrap: break-word; /* Allow text wrapping */
+    }
+    
+    .certin-table th {
+      background-color: #333;
+      color: white;
+    }
+    
+    .certin-table .critical {
+      background-color: #FF6347; /* Light Coral */
+    }
+    
+    .certin-table .high {
+      background-color: #FFA07A; /* Light Salmon */
+    }
+    
+    .certin-table .medium {
+      background-color: #FFD700; /* Gold */
+    }
+    
+    .certin-table .low {
+      background-color: #ADFF2F; /* Green Yellow */
+    }
+    
+    .certin-table .info {
+      background-color: #87CEEB; /* Sky Blue */
+    }
+    
+    .certin-table .inactive {
+      background-color: #BAE6AA; /* Yellow Green */
+    }
+    
+    .certin-table .active {
+      background-color: #EE7077; /* Silver */
+    }
+    
+    
+    .vulnerabilities th td {
+    	border: 1px solid white;
+    }
+    
+    .vulnerabilities {
+    	margin-top: 10px;
+    	border-collapse: collapse;
+    	width: 80%;
+    	max-width: 600px;
+    }
+    
+    .vulnerabilities th,
+    .vulnerabilities td {
+    	border: 1px solid white;
+    	padding: 5px;
+    	text-align: left;
+    }
+    
+    .vulnerabilities th {
+    	color: black;
+    }
+    
+    .environment {
+    	margin-top: 10px;
+    	border-collapse: collapse;
+    	width: 80%;
+    }
+    
+    .environment th,
+    .environment td {
+    	border: 1px solid white;
+    	padding: 0px;
+    	text-align: left;
+    }
+    
+    .environment th {
+    	color: black;
+    }
+    
+    .vulnerabilities-table {
+    	padding-bottom: 5px;
+    }
+    
+    h2 h3 h4 h5 h6 {
+    	font-weight: 200;
+    }
+    
+    .hidden-td {
+    	display: none;
+    }
+    
+    .hidden-tr {
+    	display: none;
+    }
+    
+    .engagement-table table,
+    td,
+    th {
+    	border: 1px solid #ddd;
+    	padding: 10px;
+    }
+    
+    .engagement-table {
+    border-collapse: collapse;
+    width: 100%;
+    }
+    
+    .engagement-table th {
+    background-color: #f2f2f2; /* Optional: Set header background color */
+    padding: 10px; /* Padding for header cells */
+    text-align: left; /* Align text to the left in header cells */
+    }
+    
+    .engagement-table td {
+    padding: 12px 6px; /* Add top and bottom padding of 5px, and left/right padding of 3px */
+    }
+    
+    .engagement-table tr:nth-child(even) td {
+    background-color: #F2F2F2; /* Color for even rows */
+    }
+    
+    .engagement-table tr:nth-child(odd) td {
+    background-color: #ffffff; /* Color for odd rows */
+    }
+    
+    
+    
+    
+     
+</style>
 
-<body>
-  <!-- Cover Page -->
-  <div class="logo"><img src="https://res.cloudinary.com/nk-images-online/image/upload/v1728972877/strobes/strobes-logo_ikuzgs.png" alt="Strobes Logo"></div>
-  <div class="cover-page-title">First Audit Report</div><br><br><br>
-  <table class="info-table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style id="defaultCSS">
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    html, body {
+        position: relative;
+        margin: 0;
+        border: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;    
+      }
+    body {
+        // max-width: 15.8cm !important;
+        // width: 15.8cm !important;
+        max-height:100% !important;
+        height: 100% !important;
+        display: block !important;
+        // min-height: 21cm !important;
+        // display: table-captions !important;
+        // box-sizing: content-box !important;
+        padding: 1cm 1cm 2cm !important;
+        margin: 0.5cm auto !important;
+        background: white !important;
+        // border-radius: 5px !important;
+        // box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) !important;
+        font-size: 12pt !important;
+    }
+    .subpage {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    // div p span {
+    //     display: inline-block !important;
+    //     max-width: 100% !important;
+    // } 
+    p {
+        display: block !important;
+        white-space: unset;
+    }
+    table {
+        max-width: 100% !important;
+        width: 100% !important ;
+    }
+    div {
+        display: block;
+        max-width: 100% !important;
+        white-space: unset;
+        overflow-wrap: anywhere;
+    } 
+    
+    pre, code {
+        width: 100% !important;
+    }   
+    
+    span {
+        width: 100% !important;
+      
+    }
+    
+    td p {
+        display: grid !important;
+        width: 100% !important;
+    }
+    
+    p{
+        width: 100% !important;
+        word-wrap: break-word !important;
+    }
+    
+    img {
+        max-width: 100% !important;
+        object-fit: contain;
+        // width:100%;
+    }
+    
+    table, th, td {
+        border: 1px dotted #000;
+      }
+    hr {
+        margin-bottom: 10px;
+    }
+    /* override styles when printing */
+    @media print {
+        
+        body {
+            -webkit-print-color-adjust: exact; 
+            border: none !important;
+            box-shadow: none !important;
+            // width: 22.8cm !important;
+            // max-width: 22.8cm !important;
+        }
+        .section-page {
+            width:100%;
+            size:21cm 29.7cm;
+            margin:1cm 0.2cm; 
+            mso-title-page:yes;
+            mso-page-orientation: portrait;
+            mso-header: header;
+            mso-footer: footer;
+            display: block; 
+            page-break-before: always;
+        }
+        .assessment-img {
+            border-bottom: 1.4px solid rgba(221,225,230,1); 
+        }
+        .section-footer {
+            position: fixed !important;
+            bottom: 0px !important;
+            page-break-after: always !important;
+        }
+        .section-header {
+            page-break-before: always;
+        }
+        @page {
+                size: A4;
+                size: portrait;
+            
+        }
+        #page-break-jodit {
+            visibility: hidden;
+        }
+    }
+</style>
+<div class="logo"> <img src="https://res.cloudinary.com/nk-images-online/image/upload/v1728972877/strobes/strobes-logo_ikuzgs.png" alt="Strobes Logo"></div>
+<div class="cover-page-title"> First Audit Report</div><br><br><br>
+<table class="info-table">
     <tbody>
-      <tr>
-        <th>Report Release Date</th>
-        <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
-      </tr>
-      <tr>
-        <th>Type of Audit</th>
-        <td>Web Application Vulnerability Assessment and Penetration Testing</td>
-      </tr>
-      <tr>
-        <th>Type of Audit Report</th>
-        <td>First Audit Report</td>
-      </tr>
-      <tr>
-        <th>Audit Period</th>
-        <td>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}<br>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
-      </tr>
-      <tr>
-        <th>Audit Status</th>
-        <td>Finished</td>
-      </tr>
+        <tr>
+            <th>Report Release Date</th>
+            <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+        </tr>
+        <tr>
+            <th>Type of Audit</th>
+            <td>Web Application Vulnerability Assessment and Penetration Testing</td>
+        </tr>
+        <tr>
+            <th>Type of Audit Report</th>
+            <td>First Audit Report</td>
+        </tr>
+        <tr>
+            <th>Audit Period</th>
+            <td>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}<br>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+        </tr>
+        <tr>
+            <th>Audit Status</th>
+            <td>Finished</td>
+        </tr>
     </tbody>
-  </table>
-
-  <!-- Document Control -->
-  <div class="new-page">
-    <h2 style="text-align: center;">Document Control</h2>
+</table>
+<div class="new-page">
+    <center>
+        <h2>Document Control</h2>
+    </center>
     <div class="section-title">Document Preparation</div>
     <table class="info-table">
-      <tbody>
-        <tr><th>Document Title</th><td>First Audit Report</td></tr>
-        <tr><th>Document Version</th><td>1.0</td></tr>
-        <tr><th>Prepared by</th><td>{{ custom.reportby }}</td></tr>
-        <tr><th>Reviewed by</th><td>{{ custom.reviewedby }}</td></tr>
-        <tr><th>Released by</th><td>Strobes Security</td></tr>
-        <tr><th>Release date</th><td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td></tr>
-      </tbody>
+        <tbody>
+            <tr>
+                <th>Document Title</th>
+                <td>First Audit Report</td>
+            </tr>
+            <tr>
+                <th>Document ID</th>
+                <td>01</td>
+            </tr>
+            <tr>
+                <th>Document Version</th>
+                <td>1.0</td>
+            </tr>
+            <tr>
+                <th>Prepared by</th>
+                <td>{{ custom.reportby }}</td>
+            </tr>
+            <tr>
+                <th>Reviewed by</th>
+                <td>{{ custom.reviewedby }}</td>
+            </tr>
+            <tr>
+                <th>Approved by</th>
+                <td>Anurag Giri</td>
+            </tr>
+            <tr>
+                <th>Released by</th>
+                <td>Strobes Security</td>
+            </tr>
+            <tr>
+                <th>Release date</th>
+                <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+            </tr>
+        </tbody>
     </table>
-    
     <div class="section-title">Document Distribution List</div>
     <table class="info-table">
-      <tbody>
-        <tr>
-          <th>Name</th>
-          <th>Organization Name</th>
-          <th>Designation</th>
-          <th>Email Id</th>
-        </tr>
-        <tr>
-          <td>{{ engagement.fields['client_spoc_name'] if 'client_spoc_name' in engagement.fields else '' }}</td>
-          <td>{{ info.organization_name }}</td>
-          <td>{{ engagement.fields['client_spoc_role'] if 'client_spoc_role' in engagement.fields else '' }}</td>
-          <td>{{ engagement.fields['client_spoc_email'] if 'client_spoc_email' in engagement.fields else '' }}</td>
-        </tr>
-      </tbody>
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <th>Organization Name</th>
+                <th>Designation</th>
+                <th>Email Id</th>
+            </tr>
+            <tr>
+                <td>{{ engagement.fields['client_spoc_name'] if 'client_spoc_name' in engagement.fields else '' }}</td>
+                <td>{{ info.organization_name }}</td>
+                <td>{{ engagement.fields['client_spoc_role'] if 'client_spoc_role' in engagement.fields else '' }}</td>
+                <td>{{ engagement.fields['client_spoc_email'] if 'client_spoc_email' in engagement.fields else '' }}</td>
+            </tr>
+        </tbody>
     </table>
-  </div>
-
-  <!-- Table of Contents -->
-  <div class="new-page">
+</div>
+<div class="new-page">
     <div class="table-of-contents" style="line-height: 1.75;">
-      <div class="title">TABLE OF CONTENTS</div>
-      <div class="toc-item"><a href="#introduction">1. INTRODUCTION</a></div>
-      <div class="toc-subitem"><a href="#statement-of-limitation">1.1 Statement of Limitation</a></div>
-      <div class="toc-item"><a href="#engagement-scope">2. ENGAGEMENT SCOPE</a></div>
-      <div class="toc-item"><a href="#auditing-team">3. DETAILS OF AUDITING TEAM</a></div>
-      <div class="toc-item"><a href="#audit-activities">4. AUDIT ACTIVITIES & TIMELINES</a></div>
-      <div class="toc-item"><a href="#audit-methodology">5. AUDIT METHODOLOGY</a></div>
-      <div class="toc-item"><a href="#tools-software-used">6. TOOLS/SOFTWARE USED</a></div>
-      <div class="toc-item"><a href="#executive-summary">7. EXECUTIVE SUMMARY</a></div>
-      <div class="toc-subitem"><a href="#summary-of-results">7.1 Summary Of Results</a></div>
-      <div class="toc-subitem"><a href="#vulnerabilities-overview">7.2 Vulnerabilities Overview</a></div>
-      <div class="toc-item"><a href="#detailed-observations">8. DETAILED OBSERVATIONS</a></div>
-      
-      {% if info.finding_count > 0 %}
-      {% for bug in findings %}
-      <div class="toc-subsubitem">
-        <a href="#vulnerability-{{loop.index}}">{{ bug.title }} - {{ 'Critical' if bug.severity_label == 'critical' else 'High' if bug.severity_label == 'high' else 'Medium' if bug.severity_label == 'medium' else 'Low' if bug.severity_label == 'low' else 'Informational' if bug.severity_label == 'info' else '' }}</a>
-      </div>
-      {% endfor %}
-      {% endif %}
-      
-      <div class="toc-item"><a href="#conclusion-recommendations">9. CONCLUSION & RECOMMENDATIONS</a></div>
-      <div class="toc-item"><a href="#appendices-glossary">10. APPENDICES & GLOSSARY</a></div>
-    </div>
-  </div>
+        <div class="title">TABLE OF CONTENTS</div>
+        <div class="toc-item"><a href="#introduction">1. INTRODUCTION</a></div>
+        <div class="toc-subitem"><a href="#statement-of-limitation">1.1 Statement of Limitation</a></div>
+        <div class="toc-item"><a href="#engagement-scope">2. ENGAGEMENT SCOPE</a></div>
+        <div class="toc-item"><a href="#auditing-team">3. DETAILS OF AUDITING TEAM</a></div>
+        <div class="toc-item"><a href="#audit-activities">4. AUDIT ACTIVITIES &amp; TIMELINES</a></div>
+        <div class="toc-item"><a href="#audit-methodology">5. AUDIT METHODOLOGY &amp; CRITERIA/STANDARD REFERRED FOR AUDIT</a></div>
+        <div class="toc-subitem"><a href="#test-narrative">5.1. Test Narrative</a></div>
+        <div class="toc-subitem"><a href="#test-cases-performed">5.2. Test Cases Performed</a></div>
+        <div class="toc-subsubitem"><a href="#testcase521">5.2.1. Information Gathering</a></div>
+        <div class="toc-subsubitem"><a href="#testcase522">5.2.2. Configuration and Deployment Management Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase523">5.2.3. Identity Management Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase524">5.2.4. Authentication Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase525">5.2.5. Authorization Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase526">5.2.6. Session Management Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase527">5.2.7. Input Validation Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase528">5.2.8. Testing for Error Handling</a></div>
+        <div class="toc-subsubitem"><a href="#testcase529">5.2.9. Testing for Weak Cryptography</a></div>
+        <div class="toc-subsubitem"><a href="#testcase5210">5.2.10. Business Logic Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase5211">5.2.11. Client Side Testing</a></div>
+        <div class="toc-subsubitem"><a href="#testcase5212">5.2.12. API Testing</a></div>
+        <div class="toc-item"><a href="#tools-software-used">6. TOOLS/SOFTWARES USED</a></div>
+        <div class="toc-item"><a href="#executive-summary">7. EXECUTIVE SUMMARY</a></div>
+        <div class="toc-subitem"><a href="#summary-of-results">7.1 Summary Of Results</a></div>
+        <div class="toc-subitem"><a href="#vulnerabilities-overview">7.2 Vulnerabilities Overview</a></div>
+        <div class="toc-item"><a href="#detailed-observations">8. DETAILED OBSERVATIONS</a></div>
+        <div class="toc-subitem"><a href="#vulnerabilities-found">8.1. Vulnerabilities Found</a></div>
 
-  <!-- Introduction -->
-  <div class="new-page">
-    <div id="introduction" class="title">1. INTRODUCTION</div>
-    <div class="content">
-      The goal of this engagement is to find possible existing vulnerabilities in the Web Application and verify if they are exploitable, evaluate their risk, and provide remediation guidance.
+        {% if info.finding_count == 0 %}
+        <div class="toc-subitem">No vulnerabilities found</div>
+        {% endif %}
+        {% if info.finding_count &gt; 0 %}
+        {% for bug in findings %}
+        <div class="toc-subsubitem">
+            <a href="#vulnerability-{{loop.index}}" style="text-decoration: none;color: inherit;">{{ bug.title }} - {{ 'Critical' if bug.severity_label == 'critical' else 'High' if bug.severity_label == 'high' else 'Medium' if bug.severity_label == 'medium' else 'Low' if bug.severity_label == 'low' else 'Informational' if bug.severity_label == 'info' else '' }}</a>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="toc-item"><a href="#conclusion-recommendations">9. CONCLUSION &amp; RECOMMENDATIONS</a></div>
+        <div class="toc-item"><a href="#appendices-glossary">10. APPENDICES &amp; GLOSSARY</a></div>
     </div>
-    
+</div>
+
+<div class="new-page">
+    <div id="introduction" class="title">1. INTRODUCTION</div>
+    <div class="content intro-text"> The goal of this engagement is to find possible existing vulnerabilities that are applicable to Web Application and verify if they are exploitable, evaluate its risk in correspondence to its adverse impact on the business organization, provided that a permission to exploit the vulnerability is granted by the client. </div>
+    <div class="content">
+        <ol>
+            <li>Strobes security team will inspect the web application and map its functionality.</li>
+            <li>The team will develop a thorough test plan with test cases and their scenarios to execute against the target web application after mapping out the functionalities and use cases of the application.</li>
+            <li>The security team will assess the web application defined in the scope for the OWASP Top 10 vulnerabilities &amp; other application security issues using OWASP Web Application Testing Methodology.</li>
+            <li>The security team will report the progress of the assessment to the {{ info.organization_name }} periodically.</li>
+            <li>If a vulnerability is found, the security team will analyze the Exploitability and Impact Metrics corresponding to the Common Vulnerability Scoring System (CVSS) Framework and then assign the severity.</li>
+            <li>The security team will produce an audit report that includes the overall security posture of the targeted web application, a description of the vulnerabilities, recommendations on how to address the issues found during the assessment, and overall risks that are associated due to them.</li>
+            <li>Once a re-validation request for the reported vulnerabilities is raised, the security team will revalidate the reported issues.</li>
+            <li>The security team will produce a follow-up audit report, which will reflect the status of the reported issues after the mitigations are deployed by the {{ info.organization_name }}. Strobes security team will ensure that all the mitigations deployed in the web application are thoroughly analyzed and possible methods to bypass the mitigations are being checked.</li>
+            <li>All information obtained during the assessment will be processed, analyzed, and stored in accordance with the Strobes security practices and data handling policy.</li>
+        </ol>
+    </div>
     <div id="statement-of-limitation" class="section-title">1.1 STATEMENT OF LIMITATION</div>
     {%if custom.statement_of_limitations_if_any_markdown %}
     <div class="content bug_description">{{ custom.statement_of_limitations_if_any_markdown | markdownify }}</div>
     {% else %}
-    <div class="content">Strobes team did not have any limitations for this engagement.</div>
+    <div class="content"> Strobes team did not have any limitations for this engagement. </div>
     {% endif %}
-  </div>
+    <div class="content"><br></div>
+</div>
+<div class="new-page">
+    <div class="engagement-contents">
+        <div id="engagement-scope" class="title">2. ENGAGEMENT SCOPE </div>
+        <table class="info-table engagement-table">
 
-  <!-- Engagement Scope -->
-  <div class="new-page">
-    <div id="engagement-scope" class="title">2. ENGAGEMENT SCOPE</div>
-    <table class="info-table">
-      <tbody>
-        <tr>
-          <td>Application Name</td>
-          <td>{% for item in assets %}{% for asset in item %}{{asset.name}}{% endfor %}{% endfor %}</td>
-        </tr>
-        <tr>
-          <td>Staging URL</td>
-          <td>{% for list in assets %}{% for asset in list %}{% if asset.fields %}{{ asset.fields['staging_url'] }}{% endif %}{% endfor %}{% endfor %}</td>
-        </tr>
-        <tr>
-          <td>Production URL</td>
-          <td>{% for list in assets %}{% for asset in list %}{% if asset.fields %}{{ asset.fields['production_url'] }}{% endif %}{% endfor %}{% endfor %}</td>
-        </tr>
-        <tr>
-          <td>Type of Testing</td>
-          <td>{% for list in assets %}{% for asset in list %}{% if asset.fields %}{{ asset.fields['type_of_testing'] }}{% endif %}{% endfor %}{% endfor %}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Auditing Team & Activities -->
-  <div class="new-page">
-    <div id="auditing-team" class="title">3. DETAILS OF AUDITING TEAM</div>
-    <div>{{ custom.pentesters_markdown | markdownify }}</div>
-
-    <div id="audit-activities" class="title">4. AUDIT ACTIVITIES & TIMELINES</div>
-    <table class="info-table">
-      <thead>
-        <tr>
-          <th>Activity</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Testing and Analysis</td>
-          <td>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}</td>
-          <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
-        </tr>
-        <tr>
-          <td>Reporting</td>
-          <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
-          <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Audit Methodology -->
-  <div class="new-page">
-    <div id="audit-methodology" class="title">5. AUDIT METHODOLOGY</div>
-    <div class="content">
-      <p>The OWASP methodology was followed to find vulnerabilities in the web application. The test scenarios, test cases, and business logic relevant to the application were thoroughly investigated.</p>
+            <tbody>
+                <tr>
+                    <td>Assessment Cycle</td>
+                    <td>{{ engagement.fields['assessment_cycle'] if 'assessment_cycle' in engagement.fields else '' }}- 2025</td>
+                </tr>
+                <tr>
+                    <td>Asset Description</td>
+                    <td>Web Application VAPT</td>
+                </tr>
+                <tr>
+                    <td>Criticality of Asset</td>
+                    <td>Critical</td>
+                </tr>
+                <tr>
+                    <td>Application Name</td>
+                    <td>{% for item in assets %}{% for asset in item %}{{asset.name}}{% endfor %}{% endfor %}</td>
+                </tr>
+                <tr>
+                    <td>Staging URL</td>
+                    <td>{% for list in assets %} {% for asset in list %} {% if asset.fields %} {{ asset.fields['staging_url'] }} {% endif %} {% endfor %} {% endfor %} </td>
+                </tr>
+                <tr>
+                    <td>Production URL</td>
+                    <td>{% for list in assets %} {% for asset in list %} {% if asset.fields %} {{ asset.fields['production_url'] }} {% endif %} {% endfor %} {% endfor %} </td>
+                </tr>
+                <tr>
+                    <td>Public IP Address</td>
+                    <td>{{ custom.publicIpAddress }}</td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>{{ engagement.fields['test_location'] if 'test_location' in engagement.fields else '' }}</td>
+                </tr>
+                <tr>
+                    <td>Type of Testing</td>
+                    <td>{% for list in assets %} {% for asset in list %} {% if asset.fields %} {{ asset.fields['type_of_testing'] }} {% endif %} {% endfor %} {% endfor %} </td>
+                </tr>
+                <tr>
+                    <td>Test Scope</td>
+                    <td>Web Application testing</td>
+                </tr>
+                <tr>
+                    <td>Reason for Conducting Testing</td>
+                    <td>{{ engagement.fields['reason_for_conducting_testing'] if 'reason_for_conducting_testing' in engagement.fields else '' }}</td>
+                </tr>
+            </tbody>
+        </table> <br>
+        <p>Note: The engagement scoping list is updated: {{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }} </p> <br>
+        <div class="">
+            <h4>OUT OF SCOPE</h4>
+            <ol>
+                <li>Anything in conjunction with social engineering aspects.</li>
+                <li>Any customer sites hosted on the {{ info.organization_name }} platform is explicitly off-limits.</li>
+                <li>Any services hosted by 3rd party providers and services excluded from scope.</li>
+            </ol>
+        </div>
     </div>
-    
-    <div id="tools-software-used" class="title">6. TOOLS/SOFTWARE USED</div>
-    <div>{{ custom.tools_markdown | markdownify }}</div>
-  </div>
+</div>
+<div class="new-page">
+    <div id="auditing-team" class="title">3. DETAILS OF AUDITING TEAM </div>
+    <div class="info-table-user-input">{{ custom.pentesters_markdown | markdownify }}</div>
 
-  <!-- Executive Summary -->
-  <div class="new-page">
-    <div id="executive-summary" class="title">7. EXECUTIVE SUMMARY</div>
-    <div class="content">
-      This report contains the results of the security assessment performed on <strong>{% for item in assets %}{% for asset in item%}{{asset.name}}{% endfor %}{% endfor %}</strong>. The assessment was carried out from <strong>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}</strong> to <strong>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</strong>.
+    <br>
+    <div id="audit-activities" class="title">4. AUDIT ACTIVITIES &amp; TIMELINES </div>
+
+
+    <table style="border-collapse: collapse!important; border: 0px!important;" class="info-activity">
+        <thead>
+            <tr>
+                <th>Activity</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Automated Scanning and Manual Review</td>
+                <td>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}</td>
+                <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+            </tr>
+            <tr>
+                <td>Reporting, Quality Check and Report Release</td>
+                <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+                <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="new-page">
+    <div id="audit-methodology" class="title"> 5. AUDIT METHODOLOGY &amp; CRITERIA/STANDARD REFERRED FOR AUDIT </div>
+    <div id="test-narrative" class="title-2">5.1. TEST NARRATIVE </div>
+    <div class="content intro-text">
+        <div class="section">
+            <p>The purpose &amp; business context of the web application has been understood and the possible ways in which a malicious entity would approach to find vulnerabilities in the application has been identified. The OWASP methodology has been followed to find vulnerabilities in the web application and is documented in the rest of the report. The test scenarios that were taken into consideration, the test cases that were executed, and the business logic test cases pertinent to the web application that are noteworthy have all been described.</p>
+        </div>
+    </div>
+    <div id="test-cases-performed" class="title-2">5.2. TEST CASES PERFORMED </div> <br>
+    <div id="testcase521" class="category-header">5.2.1. Information Gathering</div>
+    <table class="test-table information-gathering-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Conduct Search Engine Discovery and Reconnaissance for Information Leakage</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Fingerprint Web Server</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Review Webserver Metafiles for Information Leakage</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Enumerate Applications on Web Server</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Review Webpage Comments and Metadata for Information Leakage</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Identify application entry points</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Map execution paths through application</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Fingerprint Web Application Framework</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Fingerprint Web Application</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Map Application Architecture</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase522" class="category-header">5.2.2. Configuration and Deployment Management Testing</div>
+    <table class="test-table configuration-deployment-management-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Test Network/Infrastructure Configuration</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Test Application Platform Configuration</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Test File Extensions Handling for Sensitive Information</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Review Old, Backup and Unreferenced Files for Sensitive Information</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Enumerate Infrastructure and Application Admin Interfaces</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Test HTTP Methods</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Test HTTP Strict Transport Security</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Test File Permission</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Test for Subdomain Takeover</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Test Cloud Storage</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>Test for Content Security Policy</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>Test for Path Confusion</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase523" class="category-header">5.2.3. Identity Management Testing</div>
+    <table class="test-table identity-management-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Test Role Definitions</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Test User Registration Process</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Test Account Provisioning Process</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Testing for Account Enumeration and Guessable User Account</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Testing for Weak or unenforced username policy</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase524" class="category-header">5.2.4. Authentication Testing</div>
+    <table class="test-table authentication-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing for Credentials Transported over an Encrypted Channel</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Testing for Default Credentials</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Testing for Weak Lock Out Mechanism</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Testing for Bypassing Authentication Schema</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Testing for Vulnerable Remember Password</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Testing for Browser Cache Weakness</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Testing for Weak Password Policy</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Testing for Weak Security Question Answer</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Testing for Weak Password Change or Reset Functionalities</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Testing for Weaker Authentication in Alternative Channel</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>Testing Multi Factor Authentication</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase525" class="category-header">5.2.5. Authorization Testing</div>
+    <table class="test-table authorization-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing Directory Traversal File Include</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Testing for Bypassing Authorization Schema</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Testing for Privilege Escalation</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Testing for Insecure Direct Object References</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Testing for OAuth Weaknesses</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Testing for OAuth Authorization Server Weaknesses</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Testing for OAuth Client Weaknesses</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase526" class="category-header">5.2.6. Session Management Testing</div>
+    <table class="test-table session-management-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing for Bypassing Session Management Schema</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Testing for Cookies Attributes</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Testing for Session Fixation</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Testing for Exposed Session Variables</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Testing for Cross Site Request Forgery</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Testing for Logout Functionality</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Test Session Timeout</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Testing for Session Puzzling</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Testing for Session Hijacking</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Testing JSON Web Tokens</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase527" class="category-header">5.2.7. Input Validation Testing</div>
+    <table class="test-table input-validation-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing for Reflected Cross Site Scripting</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Testing for Stored Cross Site Scripting</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Testing for HTTP Verb Tampering</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Testing for HTTP Parameter Pollution</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Testing for SQL Injection</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Testing for LDAP Injection</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Testing for XML Injection</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Testing for SSI Injection</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Testing for XPath Injection</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Testing for IMAP/SMTP Injection</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>Testing for Code Injection</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>Testing for Command Injection</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>Testing for Incubated Vulnerability</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>Testing for HTTP Splitting</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>Testing for HTTP Smuggling</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>Testing for HTTP Incoming Requests</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>Testing for Host Header Injection</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>Testing for Server-side Template Injection</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>Testing for Server-Side Request Forgery</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>Testing for Mass Assignment</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase528" class="category-header">5.2.8. Testing for Error Handling</div>
+    <table class="test-table error-handling-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing for Improper Error Handling</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Testing for Stack Traces</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase529" class="category-header">5.2.9. Testing for Weak Cryptography</div>
+    <table class="test-table weak-cryptography-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing for Weak SSL/TLS Ciphers, Insufficient Transport Layer Protection</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Testing for Padding Oracle</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Testing for Sensitive information sent via unencrypted channels</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Testing for Weak Encryption</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase5210" class="category-header">5.2.10. Business Logic Testing</div>
+    <table class="test-table business-logic-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Test Business Logic Data Validation</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Test Ability to Forge Requests</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Test Integrity Checks</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Test for Process Timing</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Test Number of Times a Function Can be Used Limits</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Testing for the Circumvention of Work Flows</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Test Defenses Against Application Misuse</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Test Upload of Unexpected File Types</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Test Upload of Malicious Files</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Test Payment Functionality</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase5211" class="category-header">5.2.11. Client Side Testing</div>
+    <table class="test-table client-side-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing for DOM based Cross Site Scripting</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Testing for JavaScript Execution</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Testing for HTML Injection</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Testing for Client Side URL Redirect</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Testing for CSS Injection</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Testing for Client Side Resource Manipulation</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Test Cross Origin Resource Sharing</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Testing for Cross Site Flashing</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Testing for Clickjacking</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Testing Web Sockets</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>Test Web Messaging</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>Test Browser Storage</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>Testing for Cross Site Script Inclusion</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="testcase5212" class="category-header">5.2.12. API Testing</div>
+    <table class="test-table api-testing-table">
+        <thead>
+            <tr>
+                <th class="small-col">S No.</th>
+                <th class="large-col">TEST CASE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Testing GraphQL</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="new-page">
+    <div id="tools-software-used" class="title">6. TOOLS/SOFTWARES USED </div>
+    <div class="info-table-user-input">
+        {{ custom.tools_markdown | markdownify }}
     </div>
 
+</div>
+
+
+
+
+<div class="new-page">
+    <div id="executive-summary" class="title">7. EXECUTIVE SUMMARY
+    </div>
+
+    <div class="content">
+        <div class="section">This report holds the results of the security assessment performed on <strong>{% for item in assets %}{% for asset in item%}{{asset.name}}{% endfor %}{% endfor %}</strong> application. Strobes provides customized security solutions to support the integrity of your environment. This report relates to the assessment conducted for the {% for item in assets %}{% for asset in item%}{{asset.name}}{% endfor %}{% endfor %} adopting {% for list in assets %} {% for asset in list %} {% if asset.fields %} {{ asset.fields['type_of_testing'] }} {% endif %} {% endfor %} {% endfor %} approach. The impact and risks associated with the findings have been documented, and prioritized, and proper guidance has been provided to mitigate the reported vulnerabilities.</div>
+        <div class="section">Strobes was provided with access to the application. The assessment has been carried out on a time frame of <strong>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}</strong> to <strong>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</strong>. The result of this security assessment has been systematically compiled into this report. The security posture of the application is deduced based on the following standards:</div>
+    </div>
+    <table class="posture-table">
+        <thead>
+            <tr>
+                <th>Posture Level</th>
+                <th>Posture Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="weakness-weak">
+                <td style="text-align: center;">WEAK</td>
+                <td>The application's security posture is weak due to the presence of critical or high-severity
+                    issues that pose significant risks.</td>
+            </tr>
+            <tr class="weakness-moderate">
+                <td style="text-align: center;">MODERATE</td>
+                <td>With medium or low-severity issues present, the application's security stance is
+                    moderate, highlighting the need for further improvements.</td>
+            </tr>
+            <tr class="weakness-good">
+                <td style="text-align: center;">GOOD</td>
+                <td>This state reflects a strong security posture achieved by either having only low
+                    issues or by addressing and closing reported issues while considering their
+                    dependencies.</td>
+            </tr>
+            <tr class="weakness-excellent">
+                <td style="text-align: center;">EXCELLENT</td>
+                <td>The highest security level is attained when all reported vulnerabilities are effectively
+                    resolved or when no vulnerabilities are detected, showcasing exceptional security
+                    preparedness.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="section">Based on the results, the risk assumed for your organization in the worst-case scenario is considered
+        and is given below:</div>
     {% set active_findings = findings | selectattr('state', 'eq', 1) | list %}
     {% set critical_count = active_findings | selectattr('severity_label', 'equalto', 'critical') | list | length %}
     {% set high_count = active_findings | selectattr('severity_label', 'equalto', 'high') | list | length %}
     {% set medium_count = active_findings | selectattr('severity_label', 'equalto', 'medium') | list | length %}
     {% set low_count = active_findings | selectattr('severity_label', 'equalto', 'low') | list | length %}
     {% set informational_count = active_findings | selectattr('severity_label', 'equalto', 'informational') | list | length %}
-    
+    {% set accepted_risk = findings | selectattr('state', 'eq', 6) | list %}
+    {% set active_findings_count = active_findings| length %}
+    {% set accepted_risk_count = accepted_risk| length %}
+    {% set total_issues = critical_count + high_count + medium_count + low_count + informational_count %}
+
     {% if critical_count > 0 or high_count > 0 %}
-      {% set security_posture = 'weak' %}
+    {% set security_posture = 'weak' %}
     {% elif medium_count > 0 or low_count > 0 %}
-      {% set security_posture = 'moderate' %}
+        {% set security_posture = 'moderate' %}
     {% elif informational_count > 0 %}
-      {% set security_posture = 'good' %}
+        {% set security_posture = 'good' %}
     {% else %}
-      {% set security_posture = 'excellent' %}
+        {% set security_posture = 'excellent' %}
     {% endif %}
 
+
+
     <div style="font-weight: 100; color: {{ '#EE7077' if security_posture == 'weak' else '#FF9933' if security_posture == 'moderate' else '#70AD47' if security_posture == 'good' else '#00CC00' if security_posture == 'excellent' else '' }};" class="security-posture">
-      SECURITY POSTURE: {{ security_posture }}
+        SECURITY POSTURE: {{ security_posture }}
     </div>
-  </div>
+</div>
 
-  <!-- Summary of Results -->
-  <div class="new-page">
-    <div id="summary-of-results" class="title-2">7.1 SUMMARY OF RESULTS</div>
+<div class="new-page">
+    <div id="summary-of-results" class="title-2">7.1 SUMMARY OF RESULTS </div>
+
+
     <div class="content">
-      <p>The vulnerabilities identified have been categorized based on severity. Each finding includes detailed information about the vulnerability, its impact, and recommended remediation steps.</p>
+        <div class="section">Thorough testing has been performed on the target application <strong>{% for item in assets %}{% for asset in item
+                                %}{{asset.name}}{% endfor %}{% endfor %}</strong> and {{ "a single vulnerability has been" if info.finding_count == 1 else "a few vulnerabilities have been" if info.finding_count > 0 and info.finding_count < 10 else "several vulnerabilities have been" if info.finding_count >= 10 and info.finding_count <= 50 else "a huge number of vulnerabilities have been" if info.finding_count > 50 else "no vulnerabilties have been" }}
+            found that directly or indirectly compromise the security of the application. The vulnerabilities identified in
+            the process of the vulnerability assessment and penetration test have been explained in detail in this report.
+            The methodology used, the location of the vulnerability, the impact, the root cause of the vulnerability, the
+            severity, the risk it poses to the application, the full description, the steps to reproduce the finding, the proof
+            of concept and the best possible fix for the finding have all been extensively documented. Fixing the findings
+            as soon as possible improves the overall security posture of the application which can be compliant with the
+            currently accepted security standards</div>
+        <div class="section">The reported findings are prioritized based on the impact and risk associated to the organization. The severity
+            assigned to the identified vulnerabilities is derived from CVSS Framework. The following table provides a brief
+            overview on vulnerability severity classification.</div>
     </div>
 
-    <table class="info-table">
-      <thead>
-        <tr>
-          <th>Severity</th>
-          <th>Count</th>
-          <th>SLA</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="severity-critical">
-          <td>Critical</td>
-          <td>{{ critical_count }}</td>
-          <td>2 Days</td>
-        </tr>
-        <tr class="severity-high">
-          <td>High</td>
-          <td>{{ high_count }}</td>
-          <td>4 Days</td>
-        </tr>
-        <tr class="severity-medium">
-          <td>Medium</td>
-          <td>{{ medium_count }}</td>
-          <td>10 Days</td>
-        </tr>
-        <tr class="severity-low">
-          <td>Low</td>
-          <td>{{ low_count }}</td>
-          <td>15 Days</td>
-        </tr>
-        <tr class="severity-info">
-          <td>Informational</td>
-          <td>{{ informational_count }}</td>
-          <td>N/A</td>
-        </tr>
-      </tbody>
+    <table class="severity-table">
+        <thead>
+            <tr>
+                <th>Severity</th>
+                <th>Description</th>
+                <th>SLA</th>
+                <th>CVSS Range</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="severity-critical">
+                <td style="text-align: center;">Critical</td>
+                <td>Business Impact - e.g., Bypassing security controls, Arbitrary script execution, Takeover any user’s account etc. Requires fix asap.</td>
+                <td>2 Days</td>
+                <td>9.0 - 10.0</td>
+            </tr>
+            <tr class="severity-high">
+                <td style="text-align: center;">High</td>
+                <td>Business Impact - e.g., Bypass of user accounts on critical parts of the site. Requires fix asap.</td>
+                <td>4 Days</td>
+                <td>7.0 - 8.9</td>
+            </tr>
+            <tr class="severity-medium">
+                <td style="text-align: center;">Medium</td>
+                <td>Business Impact - Typically vulnerabilities that require the attacker to combine it with another vulnerability to cause serious harm.</td>
+                <td>10 Days</td>
+                <td>4.0 - 6.9</td>
+            </tr>
+            <tr class="severity-low">
+                <td style="text-align: center;">Low</td>
+                <td>Business Impact - Can cause annoyance to the user and be used in a combination.</td>
+                <td>15 Days</td>
+                <td>0.1 - 3.9</td>
+            </tr>
+            <tr class="severity-info">
+                <td style="text-align: center;">Informational</td>
+                <td>Business Impact - Provides information about the system, environment or user.</td>
+                <td>N/A</td>
+                <td>N/A</td>
+            </tr>
+        </tbody>
     </table>
-  </div>
 
-  <!-- Detailed Observations -->
-  <div class="new-page">
+</div>
+
+
+<div class="new-page">
+    <div id="vulnerabilities-overview" class="title-2">7.2 VULNERABILITIES OVERVIEW</div>
+
+    <p style="margin-top: 5px; margin-bottom: 5px;">The following chart highlights the number of vulnerabilities found by severity:</p>
+    <div class="Page-eight-vulnerabilities-overview">
+        <div class="Page-eight-vulnerabilities-display-flex">
+            {% set max_value = [bug_count_qs(info, "severity=5"), bug_count_qs(info, "severity=4"),
+        bug_count_qs(info, "severity=3"), bug_count_qs(info, "severity=2"), bug_count_qs(info, "severity=1")] | max %}
+            {% set critical_height = (bug_count_qs(info, "severity=5") / max_value * 100) %}
+            {% set high_height = (bug_count_qs(info, "severity=4") / max_value * 100) %}
+            {% set medium_height = (bug_count_qs(info, "severity=3") / max_value * 100) %}
+            {% set low_height = (bug_count_qs(info, "severity=2") / max_value * 100) %}
+            {% set info_height = (bug_count_qs(info, "severity=1") / max_value * 100) %}
+
+            <div style="height: {{ critical_height }}%;" class="bar2 critical-bar">
+                <div class="text-at-bottom">{{ bug_count_qs(info, "severity=5") }}</div>
+            </div>
+
+            <div style="height: {{ high_height }}%;" class="bar2 high-bar">
+                <div class="text-at-bottom">{{ bug_count_qs(info, "severity=4") }}</div>
+            </div>
+            <div style="height: {{ medium_height }}%;" class="bar2 medium-bar">
+                <div class="text-at-bottom">{{ bug_count_qs(info, "severity=3") }}</div>
+            </div>
+
+            <div style="height: {{ low_height }}%;" class="bar2 low-bar">
+                <div class="text-at-bottom">{{ bug_count_qs(info, "severity=2") }}</div>
+            </div>
+
+            <div style="height: {{ info_height }}%;" class="bar2 info-bar">
+                <div class="text-at-bottom">{{ bug_count_qs(info, "severity=1") }}</div>
+            </div>
+        </div>
+        <div class="Page-eight-vulnerabilities-severities">
+            <div class="severity-bar-one">Critical</div>
+            <div class="severity-bar-two">High</div>
+            <div class="severity-bar-three">Medium</div>
+            <div class="severity-bar-four">Low</div>
+            <div class="severity-bar-five">Informational</div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+
+<div class="new-page">
+    <div class="certin-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Affected Asset</th>
+                    <th>Observation/Vulnerability Title</th>
+                    <th>CVE/CWE</th>
+                    <th>Severity</th>
+                    <th>Recommendation</th>
+                    <th>Reference</th>
+                    <th>Current Status</th>
+                    <th>New or Repeat </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="hidden-td"> {%  for bug in findings %}</td>
+                </tr>
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{% for item in assets %}{% for asset in item
+                                %}{{asset.name}}{% endfor %}{% endfor %}</td>
+                    <td>{% if bug.cwe|length &gt; 0 %}
+                        {% for cwe in bug.cwe %}
+                        {{ cwe.type }}
+                        {% endfor %}
+                        {% else %}
+                        None
+                        {% endif %}
+                    </td>
+                    <td>{% if bug.cwe|length &gt; 0 %}
+                        {% for cwe in bug.cwe %}
+                        CWE-{{ cwe.cwe_id }}
+                        {% endfor %}
+                        {% else %}
+                        None
+                        {% endif %}
+                    </td>
+                    <td style="background-color: {% if bug.severity_label == 'critical' %}#EE7077{% elif bug.severity_label == 'high' %}#FEB297{% elif bug.severity_label == 'medium' %}#FCDBA6{% elif bug.severity_label == 'low' %}#FFF1C0{% elif bug.severity_label == 'info' %}#BAE6AA{% endif %};" class="">{{ 'Critical' if bug.severity_label == 'critical' else 'High' if bug.severity_label == 'high' else 'Medium' if bug.severity_label == 'medium' else 'Low' if bug.severity_label == 'low' else 'Informational' if bug.severity_label == 'info' else '' }}</td>
+                    <td>{% if bug.fields %}
+                        {% for key, value in bug.fields.items() %}
+                        {% if key == 'short_recommendation' %}
+                        {{ value }}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td><a href="https://cwe.mitre.org/data/definitions/{% if bug.cwe|length > 0 %}{% for cwe in bug.cwe %}{{ cwe.cwe_id }}{% endfor %}{% else %}None{% endif %}.html">CWE-{% if bug.cwe|length &gt; 0 %}
+                            {% for cwe in bug.cwe %}
+                            {{ cwe.cwe_id }}
+                            {% endfor %}
+                            {% else %}
+                            None
+                            {% endif %}</a></td>
+                    <td class="{% if bug.state == 2 %}inactive{% elif bug.state == 0 %}active{% elif bug.state == 1 %}active{% else %}active{% endif %}">{% if bug.state == 2 %}
+                        Resolved
+                        {% elif bug.state == 0 %}
+                        Active
+                        {% elif bug.state == 1 %}
+                        Active
+                        {% elif bug.state == 6 %}
+                        Accepted Risk
+                        {% else %}
+                        Active
+                        {% endif %}
+                    </td>
+                    <td>{% if bug.fields %}
+                        {% for key, value in bug.fields.items() %}
+                        {% if key == 'new_repeat_obs' %}
+                        {{ value }}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="hidden-td">{% endfor %}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<div class="new-page">
     <div id="detailed-observations" class="title">8. DETAILED OBSERVATIONS</div>
-    
+    <div id="vulnerabilities-found" class="title-2">8.1. VULNERABILITIES FOUND </div>
+
     {% if info.finding_count == 0 %}
     <div>No Vulnerabilities Identified</div>
     {% else %}
     {% set ns = namespace(image_counter=1) %}
     {% for bug in findings %}
-    
-    <div id="vulnerability-{{ loop.index }}" style="margin-top: 20px; page-break-before: always;">
-      <div style="padding: 10px; background-color: {% if bug.severity_label == 'critical' %}#EE7077{% elif bug.severity_label == 'high' %}#FEB297{% elif bug.severity_label == 'medium' %}#FCDBA6{% elif bug.severity_label == 'low' %}#FFF1C0{% elif bug.severity_label == 'info' %}#BAE6AA{% endif %};">
-        <span style="margin-right: 8px;">#{{ loop.index }}</span>
-        <span>{{ bug.title }}</span>
-      </div>
-      
-      <div style="margin: 10px 0;">
-        <span style="color: #0F62FE; font-weight: bold;">SEVERITY:</span> 
-        {{ 'Critical' if bug.severity_label == 'critical' else 'High' if bug.severity_label == 'high' else 'Medium' if bug.severity_label == 'medium' else 'Low' if bug.severity_label == 'low' else 'Informational' if bug.severity_label == 'info' else '' }}
-      </div>
-      
-      <div style="margin: 10px 0;">
-        <span style="color: #0F62FE; font-weight: bold;">DESCRIPTION:</span>
-        <div class="bug_description">{{ bug.description|markdownify }}</div>
-      </div>
-      
-      <div style="margin: 10px 0;">
-        <span style="color: #0F62FE; font-weight: bold;">MITIGATION:</span>
-        <div class="bug_description">{{ bug.mitigation|markdownify }}</div>
-      </div>
-    </div>
+
+
+
+    <div id="vulnerability-{{ loop.index }}" class="vulnerabilities-table">
+
+        <div style="padding: 10px; margin-top: 10px;" class="vuln-title">
+            <span style="background-color: {% if bug.severity_label == 'critical' %}#EE7077{% elif bug.severity_label == 'high' %}#FEB297{% elif bug.severity_label == 'medium' %}#FCDBA6{% elif bug.severity_label == 'low' %}#FFF1C0{% elif bug.severity_label == 'info' %}#BAE6AA{% endif %}; padding: 4px 8px; margin-right: 8px;">
+                #{{ loop.index }}
+            </span> <span class="title-tag">{{ bug.title }}</span>
+        </div>
+
+
+
+        <div style="margin-left: 8px; margin-top: 8px;">
+            <div style="width: 100%; line-height: 1.5">
+                <div style="margin-bottom: 10px;">
+                    <span style="color: #0F62FE; font-weight: 100;">CATEGORY - </span>
+                    <span>{% if bug.fields %}
+                        {% for key, value in bug.fields.items() %}
+                        {% if key == 'category' %}
+                        {{ value }}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span style="color: #0F62FE; font-weight: 100;">SEVERITY - </span>
+                    <span>{{ 'Critical' if bug.severity_label == 'critical' else 'High' if bug.severity_label == 'high' else 'Medium' if bug.severity_label == 'medium' else 'Low' if bug.severity_label == 'low' else 'Informational' if bug.severity_label == 'info' else '' }}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span style="color: #0F62FE; font-weight: 100;">CVSS - </span>
+                    <span>{{ bug.attack_vector }}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span style="color: #0F62FE; font-weight: 100;">CWE - </span>
+                    <span>
+                        {% if bug.cwe|length &gt; 0 %}
+                        {% for cwe in bug.cwe %}
+                        {{ cwe.cwe_id }} - {{ cwe.type }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        None
+                        {% endif %}
+                    </span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span style="color: #0F62FE; font-weight: 100;">ATTRIBUTING FACTOR - </span>
+                    <span>{% if bug.fields %}
+                        {% for key, value in bug.fields.items() %}
+                        {% if key == 'attributing_factor' %}
+                        {{ value }}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <span style="color: #0F62FE; font-weight: 100;">CURRENT STATUS - </span>
+                    <span>
+                        {% if bug.state == 2 %}
+                        Resolved
+                        {% elif bug.state in [0, 1] %}
+                        Active
+                        {% else %}
+                        Active
+                        {% endif %}
+                    </span>
+                </div>
+                <div>
+                    <span style="color: #0F62FE; font-weight: 100;">NEW/REPEAT OBSERVATION - </span>
+                    <span>{% if bug.fields %}
+                        {% for key, value in bug.fields.items() %}
+                        {% if key == 'new_repeat_obs' %}
+                        {{ value }}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div>
+            {% if bug.content_object.endpoints_list %}
+            <div style="margin-top: 8px;" class="affected-endpoints">
+                <span style="color: #0F62FE; padding: 5px; margin-bottom: 5px; display: inline-block;">AFFECTED ENDPOINT(S) -</span>
+                <div style="background-color: #F2F2F2; margin-left: 5px; font-weight: 100; padding: 5px; font-size: 14px; margin-top: 5px; word-wrap: break-word; overflow-wrap: break-word;" class="code-block">
+                    {% for endpoint in bug.content_object.endpoints_list %}
+                        {{ endpoint }}{% if not loop.last %}<br>{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+            {% if bug.content_object.file_name %}
+            <div style="margin-top: 8px;" class="affected-endpoints">
+                <span style="color: #0F62FE; padding: 5px; margin-bottom: 5px; display: inline-block;">AFFECTED FILE(S) -</span>
+                <div style="background-color: #F2F2F2; margin-left: 5px; font-weight: 100; padding: 5px; font-size: 14px; margin-top: 5px;" class="code-block">
+                    {{ bug.content_object.file_name }}
+                </div>
+            </div>
+            {% endif %}
+        
+            {% if bug.description %}
+            <div style="margin-top: 3px;" class="description-div">
+                <span style="color: #0F62FE; padding: 5px; display: inline-block;">DESCRIPTION -</span>
+                <div style="margin-left: 5px; text-align: justify; margin-top: 3px;" class="content bug_description">
+                    {{ bug.description|markdownify }}
+                </div>
+            </div>
+            {% endif %}
+        
+            {% if bug.bug_attachments|length > 0 %}
+            <div style="margin-top: 3px;" class="proof-div">
+                <span style="color: #0F62FE; padding: 5px; display: inline-block;">PROOF OF CONCEPT -</span>
+                <div style="margin-left: 5px;">
+                    {% for attachment in bug.bug_attachments %}
+                        {% if attachment.attachment_extenstion in ['png', 'jpg', 'jpeg', 'PNG', 'JPG'] %}
+                            {% if info.deployment_mode == 'enterprise' %}
+                        <div style="margin: 5px auto; text-align: center;">
+                            <img style="box-sizing: border-box; width: 80%; height: auto; border: 1px solid black;" alt="{{ attachment.attachment }}" src="{{ info.hosted_address }}/api{{ attachment.attachment }}"> 
+                            <span class="caption-text" style="display: block; text-align: center; font-size: 12px; color: black; margin-top: 2px;">Figure {{ ns.image_counter }}</span>
+                        </div>
+                    {% else %}
+                        <div style="margin: 5px auto; text-align: center;">
+                            <img style="box-sizing: border-box; width: 80%; height: auto; border: 1px solid black;" alt="{{ attachment.attachment }}" src="{{ attachment.attachment }}"> 
+                            <span class="caption-text" style="display: block; text-align: center; font-size: 12px; color: black; margin-top: 2px;">Figure {{ ns.image_counter }}</span>
+                        </div>
+                    {% endif %}
+            {% set ns.image_counter = ns.image_counter + 1 %}
+                        {% else %}
+                            {% if info.deployment_mode == 'enterprise' %}
+                            <div style="margin: 3px 0;">
+                                <a href="{{ info.hosted_address }}/organizations/{{ bug.organization }}/vulnerabilities/{{ bug.id }}/attachments/{{ attachment.id }}/download/">
+                                    {{ attachment.attachment_name }}
+                                </a>
+                            </div>
+                            {% else %}
+                            <div style="margin: 3px 0;">
+                                View attachment on Strobes : <a href="{{ info.hosted_address }}/organizations/{{ bug.organization }}/vulnerabilities/{{ bug.id }}/attachments/{{ attachment.id }}/download/">
+                                    {{ attachment.attachment_name }}
+                                </a>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        
+            {% if bug.content_object.request %}
+            <div style="margin-top: 3px;" class="request-response">
+                <span style="color: #0F62FE; padding: 5px; margin-bottom: 5px; display: inline-block;">REQUEST -</span>
+                <div style="background-color: #F2F2F2; margin-left: 5px; font-weight: 100; padding: 3px; font-size: 14px; white-space: pre-wrap; word-break: break-all;" class="code-block-request-response">{{ bug.content_object.request }}</div>
+            </div>
+            {% endif %}
+        
+            {% if bug.content_object.response %}
+            <div style="margin-top: 3px;" class="request-response">
+                <span style="color: #0F62FE; padding: 5px; margin-bottom: 5px; display: inline-block;">RESPONSE -</span>
+                <div style="background-color: #F2F2F2; margin-left: 5px; font-weight: 100; padding: 3px; font-size: 14px; white-space: pre-wrap; word-break: break-all;" class="code-block-request-response">{{ bug.content_object.response }}</div>
+            </div>
+            {% endif %}
+        
+            {% if bug.steps_to_reproduce %}
+            <div style="margin-top: 3px;" class="steps-to-reproduce">
+                <span style="color: #0F62FE; padding: 5px; display: inline-block;word-wrap: break-word; overflow-wrap: break-word;">STEPS TO REPRODUCE -</span>
+                <div style="margin-left: 5px;" class="content bug_description">
+                    {{ bug.steps_to_reproduce|markdownify }}
+                </div>
+            </div>
+            {% endif %}
+        
+            <div style="margin-top: 3px;" class="mitigation">
+                <span style="color: #0F62FE; padding: 5px; display: inline-block;">MITIGATION -</span>
+                <div style="margin-left: 5px;" class="content bug_description">
+                    {% if bug.mitigation %}
+                    {{ bug.mitigation|markdownify }}
+                    {% endif %}
+                </div>
+            </div>
+        
+            <div style="margin-top: 3px;" class="references">
+                <span style="color: #0F62FE; padding: 2px; display: inline-block;">REFERENCES -</span>
+                <ol style="margin-top: 3px; margin-left: 25px;">
+                    {% if bug.cwe|length > 0 %}
+                    {% for cwe in bug.cwe %}
+                    <li>https://cwe.mitre.org/data/definitions/{{ cwe.cwe_id }}.html</li>
+                    {% endfor %}
+                    {% else %}
+                    <li>None</li>
+                    {% endif %}
+                </ol>
+            </div>
+        
+            <div style="margin-top: 3px;" class="environment">
+                <span style="color: #0F62FE; padding: 0px; display: inline-block;">ENVIRONMENT -</span>
+                <table class="vulnerabilities" style="width: 100%; margin-top: 3px;">
+                    <colgroup>
+                        <col style="width: 30%;">
+                        <col style="width: 70%;">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td style="color: black; padding: 1px;">OPERATING SYSTEM</td>
+                            <td style="padding: 3px;">- Windows 10</td>
+                        </tr>
+                        <tr>
+                            <td style="color: black; padding: 2px;">Tools</td>
+                            <td style="padding: 3px;">- Burp Suite Professional</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        
+            <div style="border-top: 1px dashed #ccc; width: 100%; margin: 5px 0;"></div>
+        </div>
     {% endfor %}
     {% endif %}
-  </div>
 
-  <!-- Conclusion & Recommendations -->
-  <div class="new-page">
-    <div id="conclusion-recommendations" class="title">9. CONCLUSION & RECOMMENDATIONS</div>
-    <div class="content">
-      <p>After thorough assessment of the web application, the findings were categorized based on their impact and demonstrated with proof of concepts. The purpose of this assessment was to identify vulnerabilities and provide remediation guidance.</p>
-      
-      {% if active_findings|length > 0 %}
-      <p>Based on the findings, we recommend the following actions:</p>
-      <ul>
-        {% set recommendations = [] %}
-        {% for bug in active_findings %}
-          {% if bug.fields %}
+
+    <div class="new-page">
+        <div id="conclusion-recommendations" class="title">
+            9. CONCLUSION {% if active_findings_count != 0 %}&amp; RECOMMENDATIONS {% endif %}
+        </div>
+        <div class="title-3">
+            CONCLUSION
+        </div>
+
+        <div style="margin-top: 5px;" class="content">
+            <p>After thorough assessment of {{ info.organization_name }} Web Application, and thoroughly examining the defenses in place, the findings were categorized into critical/high/medium/low/informational based on their impact, and have been demonstrated with working proof of concepts. The proof of concepts demonstrates how a malicious person could have exploited the vulnerabilities that have been reported, in real time. The purpose of this vulnerability assessment and penetration test is stated as follows:</p>
+
+            <ul style="margin-left: 40px">
+                <li>Identifying the different approaches that can be used to breach/exploit the application in a real-time scenario.</li>
+                <li>Estimating the damage if a breach/exploit does happen in real time.</li>
+            </ul>
+            <p>The purpose of the vulnerability assessment and penetration test has been met. All the possible approaches that can lead to a breach/exploit of the application have been taken into consideration and have been thoroughly investigated.</p>
+        </div>
+
+        {% if active_findings_count != 0 %}
+        <div class="title-3">
+            RECOMMENDATIONS
+        </div>
+        <div style="margin-top: 5px;" class="content">
+            Based on the findings of this vulnerability assessment and penetration test, it would be in the
+            company/firm's best interest to mitigate the issues that have been raised in this report, so as to
+            minimize the risk that malicious users pose to the application. Hence, Strobes recommends
+            the following:
+            <ul style="margin-left: 40px">
+{% set recommendations = [] %}
+
+    {% for bug in active_findings %}
+        {% if bug.fields %}
             {% for key, value in bug.fields.items() %}
-              {% if key == 'short_recommendation' %}
-                {% if value not in recommendations %}
-                  {% set _ = recommendations.append(value) %}
+                {% if key == 'short_recommendation' %}
+                    {% if value not in recommendations %}
+                        {% set _ = recommendations.append(value) %}
+                    {% endif %}
                 {% endif %}
-              {% endif %}
             {% endfor %}
-          {% endif %}
-        {% endfor %}
-        
-        {% for recommendation in recommendations %}
-        <li>{{ recommendation }}</li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p>All issues have been addressed, and the application's security posture is strong.</p>
-      {% endif %}
-    </div>
-  </div>
+        {% endif %}
+    {% endfor %}
 
-  <!-- Appendices & Glossary -->
-  <div class="new-page">
-    <div id="appendices-glossary" class="title">10. APPENDICES & GLOSSARY</div>
-    <div class="content">
-      <p><strong>VULNERABILITY ASSESSMENT:</strong> The process of identifying and evaluating security weaknesses in systems and applications.</p>
-      <p><strong>PENETRATION TESTING:</strong> A form of assessment to identify ways of exploiting vulnerabilities to circumvent or defeat security features.</p>
-      <p><strong>CVSS:</strong> Common Vulnerability Scoring System - a framework for rating the severity of security vulnerabilities.</p>
-      <p><strong>CWE:</strong> Common Weakness Enumeration - a list of software and hardware weakness types.</p>
+    {% for recommendation in recommendations %}
+        <li>{{ recommendation }}</li>
+    {% endfor %}
+
+
+            </ul>
+        </div>
+        {% endif %}
+
+
+        {% if active_findings_count == 0 and accepted_risk_count == 0 %}
+        <div style="padding: 10px; background-color: #ddd;" class="code-block">At this elevated level, all the threats and vulnerabilities have been fixed in a timely manner. Strobes hereby certifies that the security of {{ info.organization_name }} Web Application is sufficiently robust to protect sensitive assets such as the user’s data and activities that the applications are designed to process and store.</div>
     </div>
-  </div>
-</body>
-</html>
+    {% endif %}
+
+    {% if active_findings_count == 0 and accepted_risk_count &gt; 0 %}
+    <div style="padding: 10px; background-color: #ddd;" class="code-block">At this elevated level, all the significant threats and vulnerabilities have been fixed in a timely manner. Strobes hereby certifies that the security of {{ info.organization_name }} Web Application is sufficiently robust to protect sensitive assets such as the user’s data and activities that the applications are designed to process and store.</div>
+</div>
+<p>
+    {% endif %}
+
+</p>
+<div class="new-page">
+    <div id="appendices-glossary" class="title">
+        10. APPENDICES &amp; GLOSSARY
+    </div>
+    {% if custom.tool1_markup or custom.tool2_markup %}
+    <div class="title-3">
+        TESTING TOOLS
+    </div>
+    <div class="content">
+        {%if custom.tool1_markup %}
+        {{ custom.tool1_markup }}
+        {% endif %}
+        <br>
+        {%if custom.tool2_markup %}
+        {{ custom.tool2_markup }}
+        {% endif %}
+    </div>
+    {% endif %}
+    {% if custom.tool1_attachment or custom.tool2_attachment %}
+    <div class="title-3">SCANNING POC</div>
+    {% if custom.tool1_attachment %}
+    <img src="{{ custom.tool1_attachment }}" class="scanning-poc-img"> <span class="caption-text" style="display: block; text-align: center; font-size: 12px; margin-top:2px; color: black;">Figure {{ ns.image_counter }}</span>
+
+
+    {% endif %}
+    <br><br>
+    {% if custom.tool2_attachment %}
+    <img src="{{ custom.tool2_attachment }}" class="scanning-poc-img">
+    <span class="caption-text" style="display: block; text-align: center; font-size: 12px; margin-top:2px; color: black;">Figure {{ ns.image_counter +1 }}</span>
+
+    {% endif %}
+    {% endif %}
+</div>
+
+<div class="new-page">
+
+    <div class="title-3">
+        GLOSSARY
+    </div>
+
+    <div class="content">
+        <strong>CLOUD SECURITY CONFIGURATION REVIEW:</strong> Cloud security configuration review involves the
+        assessment of the security controls and settings implemented in a cloud environment to identify
+        any vulnerabilities or risks. The review involves assessing access controls, network security,
+        encryption, data backup, and other security controls to ensure they are effective and in
+        compliance with relevant regulatory and compliance standards.
+        <br>
+        <strong>VULNERABILITY ASSESSMENT:</strong> Vulnerability assessment is the process of identifying and
+        evaluating the security weaknesses and vulnerabilities in a system, network, application, or other
+        technology infrastructure. The goal of vulnerability assessment is to identify and prioritize
+        vulnerabilities, assess the exploitability and impact of a successful attack, and provide
+        recommendations for remediation to reduce the overall risk to the system.
+        <br><strong>PENETRATION TESTING: </strong>Form of assessment to identify ways of exploiting vulnerabilities to
+        circumvent or defeat the security features of system components. Penetration testing includes
+        network and application testing as well as controls and processes around the networks and
+        applications and occurs from both inside and outside the environment (internal/external testing).
+        <br><strong>BLACK BOX PENETRATION TESTING:</strong> Type of penetration testing in which an assessor evaluates
+        security controls by simulating a real attack targeting an application. Black Box techniques assess
+        the security of individual high-risk compiled components; interactions between components and
+        interactions between the entire application or application system with its users, other systems
+        and the external environment.
+        <br><strong>INTERNAL PENETRATION TESTING:</strong> Type of penetration testing that simulates what an insider
+        attack could accomplish. The target is typically the same as external pen-testing, but the major
+        differentiator is the "attacker" either has some sort of authorized access or is starting from a point
+        within the internal network. Insider attacks have the potential of being much more devastating
+        than an external attack because insiders already have the knowledge of what's important within
+        a network and where it's located, something that external attackers don't usually know from the
+        start
+    </div>
+
+
+</div>
