@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Strobes Security Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
+    
+    /* Core styles */
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      margin: 0;
+      padding: 1cm 1cm 2cm;
+      background: white;
+      font-size: 12pt;
+    }
+    
+    /* Page handling */
+    @page {
+      size: A4;
+      margin: 1cm 0.2cm;
+    }
+    
+    .new-page {
+      page-break-before: always;
+    }
+    
+    /* Typography */
+    .title {
+      font-size: 28px;
+      font-weight: 200;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    .title-2 {
+      font-size: 22px;
+      font-weight: 200;
+      margin-top: 20px;
+    }
+    
+    .title-3 {
+      font-size: 26px;
+      font-weight: 100;
+      color: #0F62FE;
+      margin-top: 20px;
+    }
+    
+    .cover-page-title {
+      font-size: 40px;
+      font-weight: 100;
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    /* Table styles */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    
+    .info-table th, .info-table td {
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .info-table th {
+      background-color: #f7f7f7;
+      font-weight: 600;
+    }
+    
+    .info-table tr:nth-child(odd) {
+      background-color: #fafafa;
+    }
+    
+    .info-table tr:nth-child(even) {
+      background-color: #f3f3f3;
+    }
+    
+    /* TOC styles */
+    .toc-item {
+      margin-left: 20px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    
+    .toc-subitem {
+      margin-left: 40px;
+      font-weight: 300;
+    }
+    
+    .toc-subsubitem {
+      margin-left: 60px;
+      font-weight: 100;
+    }
+    
+    /* Content sections */
+    .content {
+      text-align: justify;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    
+    /* Test case tables */
+    .test-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    .test-table th, .test-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .test-table th {
+      background-color: #f2f2f2;
+      text-align: center;
+    }
+    
+    .category-header {
+      font-size: 18px;
+      background-color: #333;
+      padding: 12px 6px;
+      color: white;
+      text-align: left;
+    }
+    
+    /* Security posture */
+    .security-posture {
+      font-size: 28px;
+      font-weight: 100;
+      text-transform: uppercase;
+      margin: 20px 0;
+    }
+    
+    /* Severity colors */
+    .severity-critical td:first-child {
+      background-color: #EE7077;
+    }
+    
+    .severity-high td:first-child {
+      background-color: #FEB297;
+    }
+    
+    .severity-medium td:first-child {
+      background-color: #FCDBA6;
+    }
+    
+    .severity-low td:first-child {
+      background-color: #FFF1C0;
+    }
+    
+    .severity-info td:first-child {
+      background-color: #BAE6AA;
+    }
+    
+    /* Print styles */
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+      }
+      
+      img {
+        max-width: 100% !important;
+        object-fit: contain;
+      }
+    }
+    
+    /* Vulnerability section */
+    .bug_description ul li {
+      margin-left: 25px;
+      margin-top: 6px;
+    }
+    
+    .bug_description pre {
+      margin: 3px 0;
+      background-color: #F2F2F2;
+      padding: 3px;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    
+    /* Logo */
+    .logo {
+      text-align: center;
+      margin-top: 50px;
+    }
+    
+    .logo img {
+      width: 60%;
+      height: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Cover Page -->
+  <div class="logo"><img src="https://res.cloudinary.com/nk-images-online/image/upload/v1728972877/strobes/strobes-logo_ikuzgs.png" alt="Strobes Logo"></div>
+  <div class="cover-page-title">First Audit Report</div><br><br><br>
+  <table class="info-table">
+    <tbody>
+      <tr>
+        <th>Report Release Date</th>
+        <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+      </tr>
+      <tr>
+        <th>Type of Audit</th>
+        <td>Web Application Vulnerability Assessment and Penetration Testing</td>
+      </tr>
+      <tr>
+        <th>Type of Audit Report</th>
+        <td>First Audit Report</td>
+      </tr>
+      <tr>
+        <th>Audit Period</th>
+        <td>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}<br>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+      </tr>
+      <tr>
+        <th>Audit Status</th>
+        <td>Finished</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Document Control -->
+  <div class="new-page">
+    <h2 style="text-align: center;">Document Control</h2>
+    <div class="section-title">Document Preparation</div>
+    <table class="info-table">
+      <tbody>
+        <tr><th>Document Title</th><td>First Audit Report</td></tr>
+        <tr><th>Document Version</th><td>1.0</td></tr>
+        <tr><th>Prepared by</th><td>{{ custom.reportby }}</td></tr>
+        <tr><th>Reviewed by</th><td>{{ custom.reviewedby }}</td></tr>
+        <tr><th>Released by</th><td>Strobes Security</td></tr>
+        <tr><th>Release date</th><td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td></tr>
+      </tbody>
+    </table>
+    
+    <div class="section-title">Document Distribution List</div>
+    <table class="info-table">
+      <tbody>
+        <tr>
+          <th>Name</th>
+          <th>Organization Name</th>
+          <th>Designation</th>
+          <th>Email Id</th>
+        </tr>
+        <tr>
+          <td>{{ engagement.fields['client_spoc_name'] if 'client_spoc_name' in engagement.fields else '' }}</td>
+          <td>{{ info.organization_name }}</td>
+          <td>{{ engagement.fields['client_spoc_role'] if 'client_spoc_role' in engagement.fields else '' }}</td>
+          <td>{{ engagement.fields['client_spoc_email'] if 'client_spoc_email' in engagement.fields else '' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="new-page">
+    <div class="table-of-contents" style="line-height: 1.75;">
+      <div class="title">TABLE OF CONTENTS</div>
+      <div class="toc-item"><a href="#introduction">1. INTRODUCTION</a></div>
+      <div class="toc-subitem"><a href="#statement-of-limitation">1.1 Statement of Limitation</a></div>
+      <div class="toc-item"><a href="#engagement-scope">2. ENGAGEMENT SCOPE</a></div>
+      <div class="toc-item"><a href="#auditing-team">3. DETAILS OF AUDITING TEAM</a></div>
+      <div class="toc-item"><a href="#audit-activities">4. AUDIT ACTIVITIES & TIMELINES</a></div>
+      <div class="toc-item"><a href="#audit-methodology">5. AUDIT METHODOLOGY</a></div>
+      <div class="toc-item"><a href="#tools-software-used">6. TOOLS/SOFTWARE USED</a></div>
+      <div class="toc-item"><a href="#executive-summary">7. EXECUTIVE SUMMARY</a></div>
+      <div class="toc-subitem"><a href="#summary-of-results">7.1 Summary Of Results</a></div>
+      <div class="toc-subitem"><a href="#vulnerabilities-overview">7.2 Vulnerabilities Overview</a></div>
+      <div class="toc-item"><a href="#detailed-observations">8. DETAILED OBSERVATIONS</a></div>
+      
+      {% if info.finding_count > 0 %}
+      {% for bug in findings %}
+      <div class="toc-subsubitem">
+        <a href="#vulnerability-{{loop.index}}">{{ bug.title }} - {{ 'Critical' if bug.severity_label == 'critical' else 'High' if bug.severity_label == 'high' else 'Medium' if bug.severity_label == 'medium' else 'Low' if bug.severity_label == 'low' else 'Informational' if bug.severity_label == 'info' else '' }}</a>
+      </div>
+      {% endfor %}
+      {% endif %}
+      
+      <div class="toc-item"><a href="#conclusion-recommendations">9. CONCLUSION & RECOMMENDATIONS</a></div>
+      <div class="toc-item"><a href="#appendices-glossary">10. APPENDICES & GLOSSARY</a></div>
+    </div>
+  </div>
+
+  <!-- Introduction -->
+  <div class="new-page">
+    <div id="introduction" class="title">1. INTRODUCTION</div>
+    <div class="content">
+      The goal of this engagement is to find possible existing vulnerabilities in the Web Application and verify if they are exploitable, evaluate their risk, and provide remediation guidance.
+    </div>
+    
+    <div id="statement-of-limitation" class="section-title">1.1 STATEMENT OF LIMITATION</div>
+    {%if custom.statement_of_limitations_if_any_markdown %}
+    <div class="content bug_description">{{ custom.statement_of_limitations_if_any_markdown | markdownify }}</div>
+    {% else %}
+    <div class="content">Strobes team did not have any limitations for this engagement.</div>
+    {% endif %}
+  </div>
+
+  <!-- Engagement Scope -->
+  <div class="new-page">
+    <div id="engagement-scope" class="title">2. ENGAGEMENT SCOPE</div>
+    <table class="info-table">
+      <tbody>
+        <tr>
+          <td>Application Name</td>
+          <td>{% for item in assets %}{% for asset in item %}{{asset.name}}{% endfor %}{% endfor %}</td>
+        </tr>
+        <tr>
+          <td>Staging URL</td>
+          <td>{% for list in assets %}{% for asset in list %}{% if asset.fields %}{{ asset.fields['staging_url'] }}{% endif %}{% endfor %}{% endfor %}</td>
+        </tr>
+        <tr>
+          <td>Production URL</td>
+          <td>{% for list in assets %}{% for asset in list %}{% if asset.fields %}{{ asset.fields['production_url'] }}{% endif %}{% endfor %}{% endfor %}</td>
+        </tr>
+        <tr>
+          <td>Type of Testing</td>
+          <td>{% for list in assets %}{% for asset in list %}{% if asset.fields %}{{ asset.fields['type_of_testing'] }}{% endif %}{% endfor %}{% endfor %}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Auditing Team & Activities -->
+  <div class="new-page">
+    <div id="auditing-team" class="title">3. DETAILS OF AUDITING TEAM</div>
+    <div>{{ custom.pentesters_markdown | markdownify }}</div>
+
+    <div id="audit-activities" class="title">4. AUDIT ACTIVITIES & TIMELINES</div>
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>Activity</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Testing and Analysis</td>
+          <td>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}</td>
+          <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+        </tr>
+        <tr>
+          <td>Reporting</td>
+          <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+          <td>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Audit Methodology -->
+  <div class="new-page">
+    <div id="audit-methodology" class="title">5. AUDIT METHODOLOGY</div>
+    <div class="content">
+      <p>The OWASP methodology was followed to find vulnerabilities in the web application. The test scenarios, test cases, and business logic relevant to the application were thoroughly investigated.</p>
+    </div>
+    
+    <div id="tools-software-used" class="title">6. TOOLS/SOFTWARE USED</div>
+    <div>{{ custom.tools_markdown | markdownify }}</div>
+  </div>
+
+  <!-- Executive Summary -->
+  <div class="new-page">
+    <div id="executive-summary" class="title">7. EXECUTIVE SUMMARY</div>
+    <div class="content">
+      This report contains the results of the security assessment performed on <strong>{% for item in assets %}{% for asset in item%}{{asset.name}}{% endfor %}{% endfor %}</strong>. The assessment was carried out from <strong>{{ custom.auditStartDate_date | format_datetime("%d %b, %Y") }}</strong> to <strong>{{ custom.auditEndDate_date | format_datetime("%d %b, %Y") }}</strong>.
+    </div>
+
+    {% set active_findings = findings | selectattr('state', 'eq', 1) | list %}
+    {% set critical_count = active_findings | selectattr('severity_label', 'equalto', 'critical') | list | length %}
+    {% set high_count = active_findings | selectattr('severity_label', 'equalto', 'high') | list | length %}
+    {% set medium_count = active_findings | selectattr('severity_label', 'equalto', 'medium') | list | length %}
+    {% set low_count = active_findings | selectattr('severity_label', 'equalto', 'low') | list | length %}
+    {% set informational_count = active_findings | selectattr('severity_label', 'equalto', 'informational') | list | length %}
+    
+    {% if critical_count > 0 or high_count > 0 %}
+      {% set security_posture = 'weak' %}
+    {% elif medium_count > 0 or low_count > 0 %}
+      {% set security_posture = 'moderate' %}
+    {% elif informational_count > 0 %}
+      {% set security_posture = 'good' %}
+    {% else %}
+      {% set security_posture = 'excellent' %}
+    {% endif %}
+
+    <div style="font-weight: 100; color: {{ '#EE7077' if security_posture == 'weak' else '#FF9933' if security_posture == 'moderate' else '#70AD47' if security_posture == 'good' else '#00CC00' if security_posture == 'excellent' else '' }};" class="security-posture">
+      SECURITY POSTURE: {{ security_posture }}
+    </div>
+  </div>
+
+  <!-- Summary of Results -->
+  <div class="new-page">
+    <div id="summary-of-results" class="title-2">7.1 SUMMARY OF RESULTS</div>
+    <div class="content">
+      <p>The vulnerabilities identified have been categorized based on severity. Each finding includes detailed information about the vulnerability, its impact, and recommended remediation steps.</p>
+    </div>
+
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>Severity</th>
+          <th>Count</th>
+          <th>SLA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="severity-critical">
+          <td>Critical</td>
+          <td>{{ critical_count }}</td>
+          <td>2 Days</td>
+        </tr>
+        <tr class="severity-high">
+          <td>High</td>
+          <td>{{ high_count }}</td>
+          <td>4 Days</td>
+        </tr>
+        <tr class="severity-medium">
+          <td>Medium</td>
+          <td>{{ medium_count }}</td>
+          <td>10 Days</td>
+        </tr>
+        <tr class="severity-low">
+          <td>Low</td>
+          <td>{{ low_count }}</td>
+          <td>15 Days</td>
+        </tr>
+        <tr class="severity-info">
+          <td>Informational</td>
+          <td>{{ informational_count }}</td>
+          <td>N/A</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Detailed Observations -->
+  <div class="new-page">
+    <div id="detailed-observations" class="title">8. DETAILED OBSERVATIONS</div>
+    
+    {% if info.finding_count == 0 %}
+    <div>No Vulnerabilities Identified</div>
+    {% else %}
+    {% set ns = namespace(image_counter=1) %}
+    {% for bug in findings %}
+    
+    <div id="vulnerability-{{ loop.index }}" style="margin-top: 20px; page-break-before: always;">
+      <div style="padding: 10px; background-color: {% if bug.severity_label == 'critical' %}#EE7077{% elif bug.severity_label == 'high' %}#FEB297{% elif bug.severity_label == 'medium' %}#FCDBA6{% elif bug.severity_label == 'low' %}#FFF1C0{% elif bug.severity_label == 'info' %}#BAE6AA{% endif %};">
+        <span style="margin-right: 8px;">#{{ loop.index }}</span>
+        <span>{{ bug.title }}</span>
+      </div>
+      
+      <div style="margin: 10px 0;">
+        <span style="color: #0F62FE; font-weight: bold;">SEVERITY:</span> 
+        {{ 'Critical' if bug.severity_label == 'critical' else 'High' if bug.severity_label == 'high' else 'Medium' if bug.severity_label == 'medium' else 'Low' if bug.severity_label == 'low' else 'Informational' if bug.severity_label == 'info' else '' }}
+      </div>
+      
+      <div style="margin: 10px 0;">
+        <span style="color: #0F62FE; font-weight: bold;">DESCRIPTION:</span>
+        <div class="bug_description">{{ bug.description|markdownify }}</div>
+      </div>
+      
+      <div style="margin: 10px 0;">
+        <span style="color: #0F62FE; font-weight: bold;">MITIGATION:</span>
+        <div class="bug_description">{{ bug.mitigation|markdownify }}</div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- Conclusion & Recommendations -->
+  <div class="new-page">
+    <div id="conclusion-recommendations" class="title">9. CONCLUSION & RECOMMENDATIONS</div>
+    <div class="content">
+      <p>After thorough assessment of the web application, the findings were categorized based on their impact and demonstrated with proof of concepts. The purpose of this assessment was to identify vulnerabilities and provide remediation guidance.</p>
+      
+      {% if active_findings|length > 0 %}
+      <p>Based on the findings, we recommend the following actions:</p>
+      <ul>
+        {% set recommendations = [] %}
+        {% for bug in active_findings %}
+          {% if bug.fields %}
+            {% for key, value in bug.fields.items() %}
+              {% if key == 'short_recommendation' %}
+                {% if value not in recommendations %}
+                  {% set _ = recommendations.append(value) %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+        
+        {% for recommendation in recommendations %}
+        <li>{{ recommendation }}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>All issues have been addressed, and the application's security posture is strong.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Appendices & Glossary -->
+  <div class="new-page">
+    <div id="appendices-glossary" class="title">10. APPENDICES & GLOSSARY</div>
+    <div class="content">
+      <p><strong>VULNERABILITY ASSESSMENT:</strong> The process of identifying and evaluating security weaknesses in systems and applications.</p>
+      <p><strong>PENETRATION TESTING:</strong> A form of assessment to identify ways of exploiting vulnerabilities to circumvent or defeat security features.</p>
+      <p><strong>CVSS:</strong> Common Vulnerability Scoring System - a framework for rating the severity of security vulnerabilities.</p>
+      <p><strong>CWE:</strong> Common Weakness Enumeration - a list of software and hardware weakness types.</p>
+    </div>
+  </div>
+</body>
+</html>
