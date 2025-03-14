@@ -139,19 +139,6 @@ jobs:
           enabled: false
 ```
 
-## Integrating with Strobes
-
-To use your ZAP configuration with Strobes:
-
-1. **Save the Configuration**: Store your YAML configuration file in a location accessible to Strobes
-2. **Create a DAST Assessment**:
-   - Navigate to "Engagements" in Strobes
-   - Create a new assessment or edit an existing one
-   - Select "DAST" as the assessment type
-   - Choose "ZAP" as the scanner
-   - Upload or reference your ZAP configuration file
-3. **Schedule the Assessment**: Set up one-time or recurring assessments
-4. **Monitor Results**: View results in the Strobes dashboard
 
 ## Best Practices
 
