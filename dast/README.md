@@ -8,9 +8,8 @@ This guide will walk you through how to leverage the OWASP ZAP Automation Framew
 2. [Setting Up Strobes for DAST](#setting-up-strobes-for-dast)
 3. [Creating a Basic ZAP Automation Configuration](#creating-a-basic-zap-automation-configuration)
 4. [Advanced Configuration Options](#advanced-configuration-options)
-5. [Integrating with Strobes](#integrating-with-strobes)
-6. [Best Practices](#best-practices)
-7. [Troubleshooting](#troubleshooting)
+5. [Best Practices](#best-practices)
+6. [Troubleshooting](#troubleshooting)
 
 ## Introduction to ZAP Automation Framework
 
