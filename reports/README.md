@@ -1,4 +1,4 @@
-# Mastering Jinja Templating in Strobes
+# Templating guide in Strobes
 
 ## Introduction
 
